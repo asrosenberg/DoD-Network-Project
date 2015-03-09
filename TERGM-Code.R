@@ -209,9 +209,9 @@ plot(gof0)
 
 summary(mod0)
 
-## Another model
-mod1 <- ergm(N ~ edges + b1degree(3), verbose=TRUE, 
-             control = control.ergm(MCMC.samplesize = 1000))
+## Basic ERGM on data from the 108 congress
+mod1 <- ergm(N[[2]] ~ edges + b1star(1:12) + b2star(1:12), verbose=TRUE, 
+             control = control.ergm(MCMC.samplesize = 100000), MCMC.burnin=1000000)
 
 summary(mod1)
 
