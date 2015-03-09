@@ -1,5 +1,5 @@
 ## =============================================================================
-## Bipartite ERGM Example in Networks Package!
+## Bipartite ERGM Example in Networks Package
 ## =============================================================================
 
 ## Load libraries
