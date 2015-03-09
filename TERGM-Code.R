@@ -221,9 +221,31 @@ par(mfrow=c(1,3))
 
 plot(gof1)
 
+## Kitchen Sink Model for endogenous network effects
 
-## Save work
-save(N, file = "bipartite_JSF_network")
+mod2 <- ergm(N ~ edges + 
+                     b1degree() +
+                     b2degree() +
+                     b1factor() +
+                     b2factor() + 
+                     b1star() +
+                     b2star() +
+                     b1concurrent() +
+                     b2concurrent() +
+                     gwb1degree() + 
+                     gwb2degree(),
+                     verbose=TRUE, 
+                     control = control.ergm(MCMC.samplesize = 1000))
+
+summary(mod2)
+
+gof1 <- gof(mod2)
+
+par(mfrow=c(1,3))
+
+plot(gof2)
+
+
 
 ## Estimate a bipartite TERGM
 
