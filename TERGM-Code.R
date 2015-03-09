@@ -96,7 +96,7 @@ setDT(JSF111)
 setkey(JSF111, "contractingofficeid", "congressionaldistrict")
 
 ## data.table magic to create the adjacency matrix
-D <- JSF[CJ(unique(contractingofficeid), unique(congressionaldistrict)),
+D <- JSF111[CJ(unique(contractingofficeid), unique(congressionaldistrict)),
          .N, by = .EACHI]
 
 D <- reshape(as.data.frame(D), v.names = "N", idvar = "congressionaldistrict",
