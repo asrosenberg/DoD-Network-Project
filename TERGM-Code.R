@@ -222,12 +222,9 @@ par(mfrow=c(1,3))
 plot(gof1)
 
 ## Kitchen Sink Model for endogenous network effects
-
 mod2 <- ergm(N ~ edges + 
                      b1degree() +
                      b2degree() +
-                     b1factor() +
-                     b2factor() + 
                      b1star() +
                      b2star() +
                      b1concurrent() +
