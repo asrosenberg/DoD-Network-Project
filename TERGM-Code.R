@@ -225,10 +225,12 @@ plot(gof1)
 mod2 <- ergm(N ~ edges + 
                      b1degree() +
                      b2degree() +
+                     b1degreerange() +
+                     b2degreerange() +
+                     b1mindegree() +
+                     b2mindegree() +
                      b1star() +
                      b2star() +
-                     b1concurrent() +
-                     b2concurrent() +
                      gwb1degree() + 
                      gwb2degree(),
                      verbose=TRUE, 
