@@ -140,6 +140,10 @@ rownames(D) <- D[,1]
 
 JSF_list <- list(A, B, C, D)
 
+## Try to get rid of CDs and Agencies that don't show up in particular slices
+A <- A[,colSums(A[, 3:31]) > 0]
+A <- A[rowSums(A[, 3:31]) > 0]
+
 ###############################################################################
 ## Create M and N which are empty lists 
 ## M will be a list of matricies (one for each Congress)
@@ -169,7 +173,38 @@ for (i in 1:length(N)) {
 ## We're going to subset each congress by CDs and agencies with  > 0 edges
 ################################################################################
 ################################################################################
-sort(table(JSF108$contractingofficeid))
+
+# Turn A, B, C, D into tables and look at frequencies
+
+table(colSums(A[, 2:31]))
+table(colSums(B[, 2:12]))
+table(colSums(C[, 2:17]))
+table(colSums(D[, 2:19]))
+
+# Starting with A, it makes sense to only look at Agencies with > 3 edges
+A <- A[,colSums(A[, 2:31]) > 3]
+A_matrix <- as.matrix(A)
+
+# Then turn our new A into a Giant Component network
+# Check the densities
+GC_108 <- network(A_matrix, directed = FALSE, bipartite = TRUE)
+network.density(GC_108)
+network.density(N[[1]])
+
+# Plot the new 108 congress network next to the old one
+par(mfrow = c(1,2))
+plot(GC_108, main = "Giant Component for 108 Congress",
+     usearrows = FALSE, edge.col = "gray", vertex.cex=ifelse(type == "actor", 0.5, 0.75),
+     vertex.col=ifelse(type == "actor", "black", "red"))
+plot(N[[1]], main = "Original 108 Congress Network",
+     usearrows = FALSE, edge.col = "gray", vertex.cex=ifelse(type == "actor", 0.5, 0.75),
+     vertex.col=ifelse(type == "actor", "black", "red"))
+
+A_matrix_rows <- A_matrix[, 2:17]
+table(rowSums(A_matrix_rows))
+A_matrix_rows <- A_matrix_rows[rowSums(A_matrix_rows)]
+
+sort(table(A$contractingofficeid))
 sort(table(JSF108$congressionaldistrict))
 plot(JSF108$congressionaldistrict)
 
@@ -229,10 +264,17 @@ require(ergm)
 
 
 ## A simple bipartite ergm
-mod0 <- ergm(N ~ edges, verbose=TRUE, 
+mod0 <- ergm(GC_108 ~ edges, verbose=TRUE, 
              control = control.ergm(MCMC.samplesize = 1000))
 
 gof0 <- gof(mod0)
+plot(gof0)
+
+# Same basic ergm but with pseudolikelihood estimation
+mod1 <- ergm(GC_108 ~ edges, verbose=TRUE, estimate = "MPLE")
+
+gof1 <- gof(mod1)
+plot(gof1)
 
 par(mfrow=c(1,3))
 
@@ -241,9 +283,10 @@ plot(gof0)
 summary(mod0)
 
 ## Basic ERGM on data from the 108 congress
-mod1 <- ergm(N[[2]] ~ edges + b1star(1:12) + b2star(1:12), verbose=TRUE, 
-             control = control.ergm(MCMC.samplesize = 100000), MCMC.burnin=1000000)
+mod1 <- ergm(GC_108 ~ edges + b1star(1:2) + b2star(1:2), verbose=TRUE, 
+             control = control.ergm(MCMC.samplesize = 10000), MCMC.burnin=100000)
 
+mod1 <- ergm(GC_108 ~ edges + b1star(1:2) + b2star(1:2), verbose=TRUE, estimate = "MPLE")
 summary(mod1)
 
 gof1 <- gof(mod1)
