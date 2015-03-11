@@ -11,7 +11,7 @@ require("texreg")
 require("xergm")
 
 ## Load data
-JSF <- read.csv("~/Downloads/JSF.csv.bz2")
+JSF <- read.csv("~/Dropbox/Archive/Spring2015/Networks2/DoD-Contracts-Network-Project/JSF.csv.bz2")
 
 ## Just keep a few columns
 JSF <- subset(JSF, select=c("agencyid", 
@@ -39,6 +39,22 @@ JSF <- subset(JSF, select=c("agencyid",
 
 ## Sample some observations
 # JSF<- JSF[sample(1:nrow(JSF), 500,replace=FALSE),]
+
+## Add NA's to cells where we have blank values
+
+JSF[JSF==""]  <- NA 
+
+## Let's see how many NAs we have for CD
+summary(is.na(JSF$congressionaldistrict))
+summary(is.na(JSF$contractingofficeid))
+
+## Take NA's out
+
+completeFun <- function(data, desiredCols) {
+     completeVec <- complete.cases(data[, desiredCols])
+     return(data[completeVec, ])
+}
+JSF <- completeFun(JSF, 3)
 
 ## Create temporal slices by Congress
 ## Created as DF because Jason's magic requires data frames
@@ -145,9 +161,24 @@ for (i in 1:length(N)) {
           usearrows = TRUE, edge.col = "grey50")
 }
 
-##### M is the list of 4 matricies for each time slice
+
+################################################################################
+################################################################################
+## M is the list of 4 matricies for each time slice
+## Let's look at the giant components of each and hopefully the CDs are the same
+## We're going to subset each congress by CDs and agencies with  > 0 edges
+################################################################################
+################################################################################
+sort(table(JSF108$contractingofficeid))
+sort(table(JSF108$congressionaldistrict))
+plot(JSF108$congressionaldistrict)
 
 
+
+
+
+A <- as.data.frame(A)
+A <- A[,colSums(A[,2:33]) > 0]
 
 
 ## Convert to network
