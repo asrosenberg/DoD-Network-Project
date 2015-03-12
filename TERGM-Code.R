@@ -6,35 +6,36 @@
 require(data.table)
 require(network)
 require(lattice)
-require("statnet")
-require("texreg")
-require("xergm")
+require(statnet)
+require(texreg)
+require(xergm)
 
 ## Load data
 JSF <- read.csv("~/Dropbox/Archive/Spring2015/Networks2/DoD-Contracts-Network-Project/JSF.csv.bz2")
+JSF <- read.csv("JSF.csv.bz2")
 
 ## Just keep a few columns
-JSF <- subset(JSF, select=c("agencyid", 
+JSF <- subset(JSF, select=c("agencyid",
                             "baseandalloptionsvalue",
-                            "congressionaldistrict", 
+                            "congressionaldistrict",
                             "contractingofficeagencyid",
-                            "contractingofficeid", 
+                            "contractingofficeid",
                             "currentcompletiondate",
                             "dollarsobligated",
-                            "dunsnumber", 
+                            "dunsnumber",
                             "effectivedate",
                             "fiscal_year",
                             "fundingrequestingofficeid",
-                            "mod_agency", 
-                            "mod_parent", 
+                            "mod_agency",
+                            "mod_parent",
                             "modnumber",
-                            "parentdunsnumber", 
+                            "parentdunsnumber",
                             "piid",
                             "placeofperformancecongressionaldistrict",
                             "principalnaicscode",
                             "systemequipmentcode",
                             "ultimatecompletiondate",
-                            "unique_transaction_id", 
+                            "unique_transaction_id",
                             "zipcode"))
 
 ## Sample some observations
@@ -42,7 +43,7 @@ JSF <- subset(JSF, select=c("agencyid",
 
 ## Add NA's to cells where we have blank values
 
-JSF[JSF==""]  <- NA 
+JSF[JSF==""]  <- NA
 
 ## Let's see how many NAs we have for CD
 summary(is.na(JSF$congressionaldistrict))
@@ -80,7 +81,7 @@ A <- JSF108[CJ(unique(contractingofficeid), unique(congressionaldistrict)),
 A <- reshape(as.data.frame(A), v.names = "N", idvar = "congressionaldistrict",
              timevar = "contractingofficeid", direction = "wide")
 
-dim(A) 
+dim(A)
 
 setDT(JSF109)
 setkey(JSF109, "contractingofficeid", "congressionaldistrict")
@@ -93,7 +94,7 @@ B <- JSF109[CJ(unique(contractingofficeid), unique(congressionaldistrict)),
 B <- reshape(as.data.frame(B), v.names = "N", idvar = "congressionaldistrict",
              timevar = "contractingofficeid", direction = "wide")
 
-dim(B) 
+dim(B)
 
 setDT(JSF110)
 setkey(JSF110, "contractingofficeid", "congressionaldistrict")
@@ -106,7 +107,7 @@ C <- JSF110[CJ(unique(contractingofficeid), unique(congressionaldistrict)),
 C <- reshape(as.data.frame(C), v.names = "N", idvar = "congressionaldistrict",
              timevar = "contractingofficeid", direction = "wide")
 
-dim(C) 
+dim(C)
 
 setDT(JSF111)
 setkey(JSF111, "contractingofficeid", "congressionaldistrict")
@@ -118,15 +119,15 @@ D <- JSF111[CJ(unique(contractingofficeid), unique(congressionaldistrict)),
 D <- reshape(as.data.frame(D), v.names = "N", idvar = "congressionaldistrict",
              timevar = "contractingofficeid", direction = "wide")
 
-dim(D) 
+dim(D)
 
 ###############################################################################
-## Now creat make_type function for bipartite network
+## Now create make_type function for bipartite network
 ## Put row names on each DF (for each congress)
 ## Then put them into a list
 ################################################################################
 make_type <- function(adj)
-     c(rep("actor", nrow(adj)), rep("group", ncol(adj)))
+    c(rep("actor", nrow(adj)), rep("group", ncol(adj)))
 
 N <- network(A, directed=TRUE, bipartite=TRUE)
 
@@ -145,7 +146,7 @@ A <- A[,colSums(A[, 3:31]) > 0]
 A <- A[rowSums(A[, 3:31]) > 0]
 
 ###############################################################################
-## Create M and N which are empty lists 
+## Create M and N which are empty lists
 ## M will be a list of matricies (one for each Congress)
 ## N will be the same, but just for networks
 ## then plot them
@@ -208,13 +209,8 @@ sort(table(A$contractingofficeid))
 sort(table(JSF108$congressionaldistrict))
 plot(JSF108$congressionaldistrict)
 
-
-
-
-
 A <- as.data.frame(A)
 A <- A[,colSums(A[,2:33]) > 0]
-
 
 ## Convert to network
 rownames(A) <- A[,1]
@@ -229,10 +225,10 @@ N <- network(A, directed=TRUE, bipartite=TRUE)
 
 type <- make_type(A)
 
-plot(N, 
+plot(N,
      main = "Bipartite Network of Federal Agencies and Congressional Districts",
-     pad=0, 
-     edge.col='gray', 
+     pad=0,
+     edge.col='gray',
      vertex.border=FALSE,
      vertex.cex=ifelse(type == "actor", 0.75, 1.5),
      vertex.col=ifelse(type == "actor", "gray", "red"))
@@ -264,7 +260,7 @@ require(ergm)
 
 
 ## A simple bipartite ergm
-mod0 <- ergm(GC_108 ~ edges, verbose=TRUE, 
+mod0 <- ergm(GC_108 ~ edges, verbose=TRUE,
              control = control.ergm(MCMC.samplesize = 1000))
 
 gof0 <- gof(mod0)
@@ -283,7 +279,7 @@ plot(gof0)
 summary(mod0)
 
 ## Basic ERGM on data from the 108 congress
-mod1 <- ergm(GC_108 ~ edges + b1star(1:2) + b2star(1:2), verbose=TRUE, 
+mod1 <- ergm(GC_108 ~ edges + b1star(1:2) + b2star(1:2), verbose=TRUE,
              control = control.ergm(MCMC.samplesize = 10000), MCMC.burnin=100000)
 
 mod1 <- ergm(GC_108 ~ edges + b1star(1:2) + b2star(1:2), verbose=TRUE, estimate = "MPLE")
@@ -296,7 +292,7 @@ par(mfrow=c(1,3))
 plot(gof1)
 
 ## Kitchen Sink Model for endogenous network effects
-mod2 <- ergm(N ~ edges + 
+mod2 <- ergm(N ~ edges +
                      b1degree() +
                      b2degree() +
                      b1degreerange() +
@@ -305,9 +301,9 @@ mod2 <- ergm(N ~ edges +
                      b2mindegree() +
                      b1star() +
                      b2star() +
-                     gwb1degree() + 
+                     gwb1degree() +
                      gwb2degree(),
-                     verbose=TRUE, 
+                     verbose=TRUE,
                      control = control.ergm(MCMC.samplesize = 1000))
 
 summary(mod2)
@@ -325,4 +321,49 @@ plot(gof2)
 ## SPEND LOTS OF TIME MAKING SURE YOU PRE-PROCESS CORRECTLY!
 
 
+## -----------------------------------------------------------------------------
+## Bipartite ERGMs on Orginal Data
+## -----------------------------------------------------------------------------
 
+ctrl <- control.ergm(
+    MCMC.interval=1000,
+    MCMC.burnin=200000,
+    MCMC.samplesize=100000,
+    MCMLE.maxit=10)
+
+plot(summary(N[[1]] ~ b1degree(1:20)))
+plot(summary(N[[1]] ~ b2degree(1:20)))
+
+mod1 <- ergm(N[[1]] ~ edges, control=ctrl, verbose=TRUE)
+summary(mod1)
+
+DECAY <- seq(1, 4, by=0.2)
+RESULT <- matrix(0, ncol=2, nrow=length(DECAY))
+
+for (i in 1:length(DECAY)) {
+    decay <- DECAY[i]
+    RESULT[i,] <- try(coef(ergm(N[[1]] ~ edges
+                                ## + gwb1degree(3.0, fixed=TRUE)
+                                + gwb2degree(decay, fixed=TRUE),
+                                verbose=TRUE, control=ctrl)))
+}
+
+
+## > RESULT
+##            [,1]       [,2]
+##  [1,]  1.517632  -6.944632
+##  [2,]  1.578917  -4.785641
+##  [3,]  2.045375  -9.890707
+##  [4,]  2.466362  -8.483947
+##  [5,]  2.927742  -9.103538
+##  [6,]  3.434409 -10.359861
+##  [7,]  3.776188  -9.870859
+##  [8,]  4.276437 -10.577873
+##  [9,]  4.666221 -10.473028
+## [10,]  5.176068 -10.507367
+## [11,]  5.622305 -10.716358
+## [12,]  6.284993 -11.065329
+## [13,]  7.024273 -11.621657
+## [14,]  7.950342 -12.408078
+## [15,]  9.117513 -13.468616
+## [16,] 10.530569 -14.883984
