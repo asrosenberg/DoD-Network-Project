@@ -11,4 +11,4 @@ require(ergm)
 ## setwd("~/jwm/research/contracts")
 
 ## Load data
-JSF <- read.csv("data/JSF-networks.RData")
+JSF <- load("data/JSF-networks.RData")
