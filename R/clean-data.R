@@ -56,17 +56,17 @@ JSF <- completeFun(JSF, 3)
 ## Created as DF because Jason's magic requires data frames
 ## JWM: I beleive these need to be corrected. WM: They did.
 JSF109 <- as.data.frame(subset(JSF, 
-     last_modified_date >= as.Date("01/03/2005", "%m\%d\%Y") &                      
-     last_modified_date <= as.Date("01/02/2007", "%m\%d\%Y")))
+     last_modified_date >= as.Date("01/03/2005", "%m/%d/%Y") &                      
+     last_modified_date <= as.Date("01/02/2007", "%m/%d/%Y")))
 JSF110 <- as.data.frame(subset(JSF, 
-     last_modified_date >= as.Date("01/03/2007", "%m\%d\%Y") &                      
-     last_modified_date <= as.Date("01/02/2009", "%m\%d\%Y")))
+     last_modified_date >= as.Date("01/03/2007", "%m/%d/%Y") &                      
+     last_modified_date <= as.Date("01/02/2009", "%m/%d/%Y")))
 JSF111 <- as.data.frame(subset(JSF, 
-     last_modified_date >= as.Date("01/03/2009", "%m\%d\%Y") &                      
-     last_modified_date <= as.Date("01/02/2011", "%m\%d\%Y")))
+     last_modified_date >= as.Date("01/03/2009", "%m/%d/%Y") &                      
+     last_modified_date <= as.Date("01/02/2011", "%m/%d/%Y")))
 JSF112 <- as.data.frame(subset(JSF, 
-     last_modified_date >= as.Date("01/03/2011", "%m\%d\%Y") &                      
-     last_modified_date <= as.Date("01/02/2013", "%m\%d\%Y")))
+     last_modified_date >= as.Date("01/03/2011", "%m/%d/%Y") &                      
+     last_modified_date <= as.Date("01/02/2013", "%m/%d/%Y")))
 
 
 ## -----------------------------------------------------------------------------
