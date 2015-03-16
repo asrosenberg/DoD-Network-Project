@@ -54,11 +54,19 @@ JSF <- completeFun(JSF, 3)
 
 ## Create temporal slices by Congress
 ## Created as DF because Jason's magic requires data frames
-## JWM: I beleive these need to be corrected.
-JSF108 <- as.data.frame(subset(JSF, fiscal_year %in% 2003:2004))
-JSF109 <- as.data.frame(subset(JSF, fiscal_year %in% 2003:2004))
-JSF110 <- as.data.frame(subset(JSF, fiscal_year %in% 2003:2004))
-JSF111 <- as.data.frame(subset(JSF, fiscal_year))
+## JWM: I beleive these need to be corrected. WM: They did.
+JSF109 <- as.data.frame(subset(JSF, 
+     last_modified_date >= as.Date("01/03/2005", "%m\%d\%Y") &                      
+     last_modified_date <= as.Date("01/02/2007", "%m\%d\%Y")))
+JSF110 <- as.data.frame(subset(JSF, 
+     last_modified_date >= as.Date("01/03/2007", "%m\%d\%Y") &                      
+     last_modified_date <= as.Date("01/02/2009", "%m\%d\%Y")))
+JSF111 <- as.data.frame(subset(JSF, 
+     last_modified_date >= as.Date("01/03/2009", "%m\%d\%Y") &                      
+     last_modified_date <= as.Date("01/02/2011", "%m\%d\%Y")))
+JSF112 <- as.data.frame(subset(JSF, 
+     last_modified_date >= as.Date("01/03/2011", "%m\%d\%Y") &                      
+     last_modified_date <= as.Date("01/02/2013", "%m\%d\%Y")))
 
 
 ## -----------------------------------------------------------------------------
@@ -66,17 +74,17 @@ JSF111 <- as.data.frame(subset(JSF, fiscal_year))
 ## A is 108, B is 109, C is 110, D is 111 (Congresses)
 ## -----------------------------------------------------------------------------
 
-setDT(JSF108)
 setDT(JSF109)
 setDT(JSF110)
 setDT(JSF111)
+setDT(JSF112)
 
-setkey(JSF108, "contractingofficeid", "congressionaldistrict")
 setkey(JSF109, "contractingofficeid", "congressionaldistrict")
 setkey(JSF110, "contractingofficeid", "congressionaldistrict")
 setkey(JSF111, "contractingofficeid", "congressionaldistrict")
+setkey(JSF112, "contractingofficeid", "congressionaldistrict")
 
-JSFadj <- list(JSF108, JSF109, JSF110, JSF111)
+JSFadj <- list(JSF109, JSF110, JSF111, JSF112)
 
 make_adjacency <- function(dta)
 {
