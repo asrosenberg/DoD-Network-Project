@@ -10,7 +10,7 @@ require(network)
 ## setwd("~/jwm/research/contracts")
 
 ## Load data
-JSF <- read.csv("data/JSF.csv.bz2")
+JSF <- read.csv("data/JSF.csv.bz2", stringsAsFactors = FALSE)
 
 ## Just keep a few columns
 JSF <- subset(JSF, select=c("agencyid",
@@ -34,8 +34,9 @@ JSF <- subset(JSF, select=c("agencyid",
                             "systemequipmentcode",
                             "ultimatecompletiondate",
                             "unique_transaction_id",
-                            "zipcode"))
-
+                            "zipcode",
+                            "last_modified_date"))
+JSF$last_modified_date <- as.Date(JSF$last_modified_date, "%m/%d/%Y")
 
 ## Add NA's to cells where we have blank values
 JSF[JSF==""]  <- NA
@@ -54,10 +55,10 @@ JSF <- completeFun(JSF, 3)
 ## Create temporal slices by Congress
 ## Created as DF because Jason's magic requires data frames
 ## JWM: I beleive these need to be corrected.
-JSF108 <- as.data.frame(subset(JSF, fiscal_year > 2002 & fiscal_year < 2006))
-JSF109 <- as.data.frame(subset(JSF, fiscal_year > 2005 & fiscal_year < 2008))
-JSF110 <- as.data.frame(subset(JSF, fiscal_year > 2006 & fiscal_year < 2010))
-JSF111 <- as.data.frame(subset(JSF, fiscal_year > 2008 & fiscal_year < 2012))
+JSF108 <- as.data.frame(subset(JSF, fiscal_year %in% 2003:2004))
+JSF109 <- as.data.frame(subset(JSF, fiscal_year %in% 2003:2004))
+JSF110 <- as.data.frame(subset(JSF, fiscal_year %in% 2003:2004))
+JSF111 <- as.data.frame(subset(JSF, fiscal_year))
 
 
 ## -----------------------------------------------------------------------------
