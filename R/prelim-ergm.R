@@ -30,6 +30,11 @@ plot(summary(JSFnets[[1]] ~ b2degree(1:20)))
 mod1 <- ergm(JSFnets[[1]] ~ edges, control=ctrl, verbose=TRUE)
 summary(mod1)
 
+mod2 <- ergm(JSFnets[[1]] ~ edges + b1concurrent, control=ctrl, verbose=TRUE)
+summary(mod2)
+
+
+
 DECAY <- seq(1, 4, by=0.2)
 RESULT <- matrix(0, ncol=2, nrow=length(DECAY))
 
