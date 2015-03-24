@@ -37,7 +37,7 @@ JSF_109 <- JSFnets[[1]]
 plot(JSF_109)
 
 # Logit with edges and b1degree 1
-logit_109 <- ergmMPLE(JSF_109 ~ edges + b1degree(1), output="fit")$coef
+logit_109 <- ergmMPLE(JSF_109 ~ edges + b1star(2), output="fit")$coef
 
 ergmMPLE(JSF_109 ~ edges + b1degree(1), output="matrix")
 logit_109
