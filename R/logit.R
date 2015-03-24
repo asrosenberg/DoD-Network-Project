@@ -26,5 +26,19 @@ ergmMPLE(N ~ edges + b1star(2:5), output="matrix")
 
 source("R/clean-data.R")
 
+# ------------------------------------------------------------------------
+# Run a logit on 109th Congress for JSF Contracts     
+#
+# ------------------------------------------------------------------------
 
+# Call first network from JSF nets list
+# Plot to make sure it looks ok
+JSF_109 <- JSFnets[[1]]
+plot(JSF_109)
+
+# Logit with edges and b1degree 1
+logit_109 <- ergmMPLE(JSF_109 ~ edges + b1degree(1), output="fit")$coef
+
+ergmMPLE(JSF_109 ~ edges + b1degree(1), output="matrix")
+logit_109
 
