@@ -29,9 +29,21 @@ plot(summary(JSFnets[[1]] ~ b2degree(1:20)))
 
 mod1 <- ergm(JSFnets[[1]] ~ edges, control=ctrl, verbose=TRUE)
 summary(mod1)
+plot(gof(mod1))
 
 mod2 <- ergm(JSFnets[[1]] ~ edges + b1concurrent, control=ctrl, verbose=TRUE)
 summary(mod2)
+
+mod3 <- ergm(JSFnets[[1]] ~ edges + b2star(2), control=ctrl, verbose=TRUE)
+summary(mod3)
+
+# Model with b2 stars and b1 degree 
+degreedist <- table(degree(JSFnets[[1]]))
+
+attr <- as.list(as.numeric(JSF109$dollarsobligated))
+set.vertex.attribute(JSFnets[[1]], names(attr), attr)
+
+mod4 <- ergm(JSFnets[[1]] ~ edges + b1degree(2:4) + b2star(2) + edgecov(""))
 
 
 
