@@ -110,17 +110,11 @@ max_cd     <- rownames(A)[max_idx[1]]
 if (max(A) != nrow(JSF[contractingofficeagencyid == max_office & cd == max_cd]))
     stop("Maximum number of contracts in A does not match that in JSF")
 
-FullNet <- network(A, directed=FALSE, bipartite=TRUE)
-
-## make_type <- function(adj)
-##      c(rep("cd", nrow(adj)), rep("office", ncol(adj)))
-
-## type <- make_type(A)
-
-## plot(FullNet, pad=0, edge.col="gray", vertex.border=FALSE,
-##      vertex.cex=ifelse(type == "office", 1, 0.75),
-##      vertex.col=ifelse(type == "office", "red", "gray"))
-
+## Note that this addes an edge attribute, contracts, recording the number of
+## contracts recorded between CD and office.
+FullNet <- network(A, directed=FALSE, bipartite=TRUE, ignore.eval=FALSE,
+                   names.eval="contracts")
+FullNet %v% "type" <- c(rep("cd", nrow(A)), rep("office", ncol(A)))
 
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
 ## congresses because many contracts had dates earlier than the 109th and there
@@ -173,6 +167,33 @@ names(JSFadj) <- paste0("C", 109:112)
 
 JSFnets <- lapply(JSFadj, network, directed=FALSE, bipartite=TRUE)
 
-## Save networks for further processing.
+
+## -----------------------------------------------------------------------------
+## Add covariates to FullNet
+## -----------------------------------------------------------------------------
+
+Dol <- JSF[CJ(unique(JSF$contractingofficeagencyid), unique(JSF$cd)),
+           .(dollars=sum(dollarsobligated)), by = .EACHI]
+Dol <- reshape(as.data.frame(Dol), v.names = "dollars", idvar = "cd",
+               timevar = "contractingofficeagencyid", direction = "wide")
+rownames(Dol) <- Dol[,1]
+Dol[,1] <- NULL
+Dol <- as.matrix(Dol)
+colnames(Dol) <- gsub("^N.", "", colnames(Dol))
+Dol[is.na(Dol)] <- 0
+
+tmp <- cbind(r=as.vector(row(Dol)),
+             c=as.vector(col(Dol))+max(row(Dol)),
+             dollars=as.vector(Dol))
+tmp <- tmp[!is.na(tmp[,3]),]
+
+## Warning: There are negative dollar amounts.
+FullNet %e% "dollars" <- tmp[,3]
+
+
+## -----------------------------------------------------------------------------
+## Save
+## -----------------------------------------------------------------------------
+
 save(JSF, FullNet, JSFadj, JSFnets, file="data/JSF-networks.RData",
      compress="bzip2")
