@@ -42,17 +42,16 @@ JSF <- subset(JSF, select=c("agencyid",
 
 JSF <- JSF[order(JSF$idvpiid, JSF$piid), ]
 
-
 ## Add NA's to cells where we have blank values
 JSF[JSF==""]  <- NA
 
 # Make into R Date format
-JSF$effectivedate <- as.Date(JSF$effectivedate, "%m/%d/%Y")
-JSF$last_modified_date <- as.Date(JSF$last_modified_date, "%m/%d/%Y")
-JSF$signeddate <- as.Date(JSF$signeddate, "%m/%d/%Y")
-JSF$currentcompletiondate <- as.Date(JSF$currentcompletiondate, "%m/%d/%Y")
+JSF$effectivedate          <- as.Date(JSF$effectivedate, "%m/%d/%Y")
+JSF$last_modified_date     <- as.Date(JSF$last_modified_date, "%m/%d/%Y")
+JSF$signeddate             <- as.Date(JSF$signeddate, "%m/%d/%Y")
+JSF$currentcompletiondate  <- as.Date(JSF$currentcompletiondate, "%m/%d/%Y")
 JSF$ultimatecompletiondate <- as.Date(JSF$ultimatecompletiondate, "%m/%d/%Y")
-JSF$lastdatetoorder <- as.Date(JSF$lastdatetoorder, "%m/%d/%Y")
+JSF$lastdatetoorder        <- as.Date(JSF$lastdatetoorder, "%m/%d/%Y")
 
 ## make a new congressional district field
 ## copy in old congresionaldistrict
@@ -73,6 +72,7 @@ completeFun <- function(data, desiredCols) {
 
 JSF <- completeFun(JSF, "cd")
 
+
 ## -----------------------------------------------------------------------------
 ## Create Bipartite Networks
 ## -----------------------------------------------------------------------------
@@ -81,8 +81,19 @@ JSF <- completeFun(JSF, "cd")
 setDT(JSF)
 setkey(JSF, "contractingofficeagencyid", "cd")
 
-A <- JSF[CJ(unique(cd), unique(contractingofficeagencyid)),
-             .N, by = .EACHI]
+## The number of rows that should be in A below.
+N <- length(unique(JSF$cd)) * length(unique(JSF$contractingofficeagencyid))
+
+A <- JSF[CJ(unique(contractingofficeagencyid), unique(cd)),
+         .N, by = .EACHI]
+
+## Stop everything if the rows in A do not match N.
+if (nrow(A) != N)
+    stop("The number of rows in A is not correct.")
+
+## Stop everything if A$N is all 0, means something broke.
+if (max(A$N) == 0)
+    stop("No observations recorded in A.")
 
 A <- reshape(as.data.frame(A), v.names = "N", idvar = "cd",
              timevar = "contractingofficeagencyid", direction = "wide")
@@ -90,62 +101,70 @@ A <- reshape(as.data.frame(A), v.names = "N", idvar = "cd",
 rownames(A) <- A[,1]
 A[,1] <- NULL
 A <- as.matrix(A)
+colnames(A) <- gsub("^N.", "", colnames(A))
 
-make_type <- function(adj)
-     c(rep("actor", nrow(adj)), rep("group", ncol(adj)))
+## Verify the data
+max_idx    <- which(A == max(A), arr.ind = TRUE)
+max_office <- colnames(A)[max_idx[2]]
+max_cd     <- rownames(A)[max_idx[1]]
+if (max(A) != nrow(JSF[contractingofficeagencyid == max_office & cd == max_cd]))
+    stop("Maximum number of contracts in A does not match that in JSF")
 
-N <- network(A, directed=FALSE, bipartite=TRUE)
+FullNet <- network(A, directed=FALSE, bipartite=TRUE)
 
-type <- make_type(A)
+## make_type <- function(adj)
+##      c(rep("cd", nrow(adj)), rep("office", ncol(adj)))
 
-plot(N, pad=0, edge.col=grey[2], vertex.border=FALSE,
-     vertex.cex=ifelse(type == "actor", 0.75, 0.5),
-     vertex.col=ifelse(type == "actor", "red", "gray"))
+## type <- make_type(A)
 
-## Create temporal slices by Congress
-## Created as DF because Jason's magic requires data frames
-## JWM: I believe these need to be corrected. WM: They did.
-JSF109 <-# as.data.frame(
-     subset(JSF, 
-            effectivedate >= as.Date("01/03/2005", "%m/%d/%Y") &                      
-                 effectivedate <= as.Date("01/02/2007", "%m/%d/%Y"))
-#)
-JSF110 <- #as.data.frame(
-     subset(JSF, 
-            effectivedate >= as.Date("01/03/2007", "%m/%d/%Y") &                      
-                 effectivedate <= as.Date("01/02/2009", "%m/%d/%Y"))
-#)
-JSF111 <- #as.data.frame(
-     subset(JSF, 
-            effectivedate >= as.Date("01/03/2009", "%m/%d/%Y") &                      
-                 effectivedate <= as.Date("01/02/2011", "%m/%d/%Y"))
-#)
-JSF112 <- #as.data.frame(
-     subset(JSF, 
-            effectivedate >= as.Date("01/03/2011", "%m/%d/%Y") &                      
-                 effectivedate <= as.Date("01/02/2013", "%m/%d/%Y"))
-#)
+## plot(FullNet, pad=0, edge.col="gray", vertex.border=FALSE,
+##      vertex.cex=ifelse(type == "office", 1, 0.75),
+##      vertex.col=ifelse(type == "office", "red", "gray"))
 
+
+## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
+## congresses because many contracts had dates earlier than the 109th and there
+## was one in the 113th.
+start <- c(as.Date("01/03/2003", format="%m/%d/%Y"),  # 108
+           as.Date("01/03/2005", format="%m/%d/%Y"),  # 109
+           as.Date("01/03/2007", format="%m/%d/%Y"),  # 110
+           as.Date("01/03/2009", format="%m/%d/%Y"),  # 111
+           as.Date("01/03/2011", format="%m/%d/%Y"),  # 112
+           as.Date("01/03/2013", format="%m/%d/%Y"))  # 113
+
+end   <- c(as.Date("01/02/2005", format="%m/%d/%Y"),  # 108
+           as.Date("01/02/2007", format="%m/%d/%Y"),  # 109
+           as.Date("01/02/2009", format="%m/%d/%Y"),  # 110
+           as.Date("01/02/2011", format="%m/%d/%Y"),  # 111
+           as.Date("01/02/2013", format="%m/%d/%Y"),  # 112
+           as.Date("01/02/2015", format="%m/%d/%Y"))  # 113
+
+congress <- c(108:113)
+
+set_congress <- Vectorize(function(d) { congress[between(d, start, end)] })
+JSF$congress <- set_congress(JSF$effectivedate)
 
 
 ## -----------------------------------------------------------------------------
-## Create Adjacency Matrices
-## A is 109, B is 110, C is 111, D is 112 (Congresses)
+## Create Adjacency Matrices for the 4 congresses of interest: 109--112
 ## -----------------------------------------------------------------------------
 
-JSFadj <- list(JSF109, JSF110, JSF111, JSF112)
-
-make_adjacency <- function(dta)
+make_adjacency <- function(cong, dta=JSF)
 {
+    dta <- dta[congress == cong]
     A <- dta[CJ(unique(JSF$contractingofficeagencyid), unique(JSF$cd)),
              .N, by = .EACHI]
     out <- reshape(as.data.frame(A), v.names = "N", idvar = "cd",
-            timevar = "contractingofficeagencyid", direction = "wide")
-    out <- 1 * (out > 0)
+                   timevar = "contractingofficeagencyid", direction = "wide")
+    rownames(out) <- out[,1]
+    out[,1] <- NULL
+    out <- as.matrix(out)
+    colnames(out) <- gsub("^N.", "", colnames(out))
+    out
 }
 
-JSFadj <- lapply(JSFadj, make_adjacency)
-names(JSFadj) <- LETTERS[1:4]
+JSFadj <- lapply(109:112, make_adjacency, dta=JSF)
+names(JSFadj) <- paste0("C", 109:112)
 
 
 ## -----------------------------------------------------------------------------
@@ -155,4 +174,5 @@ names(JSFadj) <- LETTERS[1:4]
 JSFnets <- lapply(JSFadj, network, directed=FALSE, bipartite=TRUE)
 
 ## Save networks for further processing.
-save(JSFadj, JSFnets, file="data/JSF-networks.RData", compress="bzip2")
+save(JSF, FullNet, JSFadj, JSFnets, file="data/JSF-networks.RData",
+     compress="bzip2")
