@@ -78,7 +78,6 @@ JSF <- completeFun(JSF, "cd")
 ## -----------------------------------------------------------------------------
 
 ## Let's begin by creating a single network with no temporal variation
-
 setDT(JSF)
 setkey(JSF, "contractingofficeagencyid", "cd")
 
