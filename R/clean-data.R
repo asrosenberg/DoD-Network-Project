@@ -70,10 +70,38 @@ completeFun <- function(data, desiredCols) {
      completeVec <- complete.cases(data[, desiredCols])
      return(data[completeVec, ])
 }
+
 JSF <- completeFun(JSF, "cd")
+
+## -----------------------------------------------------------------------------
+## Create Bipartite Networks
+## -----------------------------------------------------------------------------
+
+## Let's begin by creating a single network with no temporal variation
 
 setDT(JSF)
 setkey(JSF, "contractingofficeagencyid", "cd")
+
+A <- JSF[CJ(unique(cd), unique(contractingofficeagencyid)),
+             .N, by = .EACHI]
+
+A <- reshape(as.data.frame(A), v.names = "N", idvar = "cd",
+             timevar = "contractingofficeagencyid", direction = "wide")
+
+rownames(A) <- A[,1]
+A[,1] <- NULL
+A <- as.matrix(A)
+
+make_type <- function(adj)
+     c(rep("actor", nrow(adj)), rep("group", ncol(adj)))
+
+N <- network(A, directed=FALSE, bipartite=TRUE)
+
+type <- make_type(A)
+
+plot(N, pad=0, edge.col=grey[2], vertex.border=FALSE,
+     vertex.cex=ifelse(type == "actor", 0.75, 0.5),
+     vertex.col=ifelse(type == "actor", "red", "gray"))
 
 ## Create temporal slices by Congress
 ## Created as DF because Jason's magic requires data frames
