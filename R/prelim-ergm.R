@@ -38,13 +38,13 @@ mod3 <- ergm(JSFnets[[1]] ~ edges + b2star(2), control=ctrl, verbose=TRUE)
 summary(mod3)
 
 # Model with b2 stars and b1 degree 
-degreedist <- table(degree(JSFnets[[1]]))
+degreedist <- table(degree(N))
 
-attr <- as.list(as.numeric(JSF109$dollarsobligated))
-set.vertex.attribute(JSFnets[[1]], names(attr), attr)
+attr <- as.list(as.numeric(JSF$dollarsobligated))
 
-mod4 <- ergm(JSFnets[[1]] ~ edges + b1degree(2:4) + b2star(2) + edgecov(""))
+set.vertex.attribute(N, names(attr), attr)
 
+mod4 <- ergm(N ~ edges + b1degree(2:4) + b2star(3) + edgecov(""))
 
 
 DECAY <- seq(1, 4, by=0.2)
