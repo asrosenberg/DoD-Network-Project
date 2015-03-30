@@ -110,11 +110,19 @@ max_cd     <- rownames(A)[max_idx[1]]
 if (max(A) != nrow(JSF[contractingofficeagencyid == max_office & cd == max_cd]))
     stop("Maximum number of contracts in A does not match that in JSF")
 
-## Note that this addes an edge attribute, contracts, recording the number of
+## Note that this adds an edge attribute, contracts, recording the number of
 ## contracts recorded between CD and office.
+
 FullNet <- network(A, directed=FALSE, bipartite=TRUE, ignore.eval=FALSE,
                    names.eval="contracts")
+
 FullNet %v% "type" <- c(rep("cd", nrow(A)), rep("office", ncol(A)))
+
+## Plot FullNet
+FullNet_plot <- plot(FullNet, pad=0, edge.col=gray, vertex.border=FALSE,
+                     vertex.cex=ifelse(type == "actor", 0.5, 0.75),
+                     vertex.col=ifelse(type == "actor", "gray", "red"))
+
 
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
 ## congresses because many contracts had dates earlier than the 109th and there
