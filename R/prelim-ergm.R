@@ -24,19 +24,40 @@ ctrl <- control.ergm(
     MCMC.interval=1000,
     MCMC.burnin=200000,
     MCMC.samplesize=100000,
-    MCMLE.maxit=10)
+    MCMLE.maxit=25)
 
 ## summary(FullNet ~ b1degree(1:10))
 ## summary(FullNet ~ b2star(2:10))
 
+## Model 0
+mod0 <- ergm(FullNet ~ edges, control=ctrl, verbose = TRUE)
+mod0_diag <- mcmc.diagnostics(mod0)
+gof0 <- gof(mod0)
+par(mfrow=c(2,2)); plot(gof0)
+summary(mod0)
+
+## Model 1
 mod1 <- ergm(FullNet ~ edges
-             + gwb1degree(0.1, fixed=TRUE)
+             + gwb1degree(0.2, fixed=TRUE)
              ## + gwb2degree(0, fixed=TRUE),
              + b2star(2:4),
              control=ctrl, verbose=TRUE)
 
+mod1_diag <- mcmc.diagnostics(mod1)
+gof1 <- gof(mod1)
+par(mfrow=c(2,2)); plot(gof1)
 summary(mod1)
 
-gof(mod1)
+## Model 2
+mod2 <- ergm(FullNet ~ edges
+             + gwb1degree(0.2, fixed=TRUE)
+             ## + gwb2degree(0, fixed=TRUE),
+             + b2star(2:4),
+             + edgecov("dollarsobligated")
+             control=ctrl, verbose=TRUE)
 
-plot(gof(mod1))
+mod2_diag <- mcmc.diagnostics(mod2)
+gof2 <- gof(mod2)
+par(mfrow=c(2,2)); plot(gof2)
+summary(mod2)
+
