@@ -120,8 +120,8 @@ FullNet %v% "type" <- c(rep("cd", nrow(A)), rep("office", ncol(A)))
 
 ## Plot FullNet
 plot(FullNet, pad=0, edge.col="gray", vertex.border=FALSE,
-                     vertex.cex=ifelse(type == "type", 0.5, 0.75),
-                     vertex.col=ifelse(type == "type", "black", "red"))
+     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"))
 
 
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
