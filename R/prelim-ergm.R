@@ -34,3 +34,9 @@ mod1 <- ergm(FullNet ~ edges
              ## + gwb2degree(0, fixed=TRUE),
              + b2star(2:4),
              control=ctrl, verbose=TRUE)
+
+summary(mod1)
+
+gof(mod1)
+
+plot(gof(mod1))
