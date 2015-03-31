@@ -51,9 +51,9 @@ summary(mod1)
 ## Model 2
 mod2 <- ergm(FullNet ~ edges
              + gwb1degree(0.2, fixed=TRUE)
-             ## + gwb2degree(0, fixed=TRUE),
+             + gwb2degree(0, fixed=TRUE),
              + b2star(2:4),
-             + edgecov("dollarsobligated")
+             + edgecov("dollarsobligated"),
              control=ctrl, verbose=TRUE)
 
 mod2_diag <- mcmc.diagnostics(mod2)

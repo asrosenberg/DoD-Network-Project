@@ -123,6 +123,8 @@ plot(FullNet, pad=0, edge.col="gray", vertex.border=FALSE,
      vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
      vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"))
 
+legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), pch = 19)
+
 
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
 ## congresses because many contracts had dates earlier than the 109th and there
