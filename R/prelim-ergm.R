@@ -45,11 +45,14 @@ mod1 <- ergm(FullNet ~ edges
 
 mod1_diag <- mcmc.diagnostics(mod1)
 gof1 <- gof(mod1)
+
 par(mfrow=c(2,2)); plot(gof1)
 summary(mod1)
-plotreg(mod1)
+coefplot1 <- plotreg(mod1, custom.model.names = "Model 1", 
+        custom.coef.names = c("Edges", "V1 GWB Degree", "V2 2-Stars", 
+                              "V2 3-Stars", "V2 4-Stars"))
 
-
+save(mod1, mod1_diag, gof1, coefplot1, file = "mod1.RData")
 
 ## Model 2
 mod2 <- ergm(FullNet ~ edges
@@ -63,4 +66,6 @@ mod2_diag <- mcmc.diagnostics(mod2)
 gof2 <- gof(mod2)
 par(mfrow=c(2,2)); plot(gof2)
 summary(mod2)
+
+
 
