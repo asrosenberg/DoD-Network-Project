@@ -6,6 +6,7 @@
 require(data.table)
 require(network)
 require(ergm)
+require(texreg)
 
 ## NOTE: Set working directory in R to the root of the contracts project.
 ## setwd("~/jwm/research/contracts")
@@ -17,7 +18,6 @@ JSF <- load("data/JSF-networks.RData")
 ## -----------------------------------------------------------------------------
 ## Estimate ERGMs
 ## -----------------------------------------------------------------------------
-
 ctrl <- control.ergm(
     ## main.method=c("Stepping"),
     ## MCMC.prop.weights="TNT",
@@ -38,7 +38,7 @@ summary(mod0)
 
 ## Model 1
 mod1 <- ergm(FullNet ~ edges
-             + gwb1degree(0.2, fixed=TRUE)
+             + gwb1degree(0.5, fixed=TRUE)
              ## + gwb2degree(0, fixed=TRUE),
              + b2star(2:4),
              control=ctrl, verbose=TRUE)
@@ -47,6 +47,9 @@ mod1_diag <- mcmc.diagnostics(mod1)
 gof1 <- gof(mod1)
 par(mfrow=c(2,2)); plot(gof1)
 summary(mod1)
+plotreg(mod1)
+
+
 
 ## Model 2
 mod2 <- ergm(FullNet ~ edges
