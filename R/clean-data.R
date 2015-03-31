@@ -119,11 +119,13 @@ FullNet <- network(A, directed=FALSE, bipartite=TRUE, ignore.eval=FALSE,
 FullNet %v% "type" <- c(rep("cd", nrow(A)), rep("office", ncol(A)))
 
 ## Plot FullNet
-plot(FullNet, pad=0, edge.col="gray", vertex.border=FALSE,
+plot(FullNet, displaylabels=FALSE, pad=0, edge.col="gray", vertex.border=FALSE,
      vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
-     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"))
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
+     main = "Bipartite Network of JSF Contracts: FY 2001 - FY 2014")
+     legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
+     pch = 19)
 
-legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), pch = 19)
 
 
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
