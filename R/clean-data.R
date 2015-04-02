@@ -131,21 +131,23 @@ plot(FullNet, displaylabels=FALSE, pad=0, edge.col="gray", vertex.border=FALSE,
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
 ## congresses because many contracts had dates earlier than the 109th and there
 ## was one in the 113th.
-start <- c(as.Date("01/03/2003", format="%m/%d/%Y"),  # 108
-           as.Date("01/03/2005", format="%m/%d/%Y"),  # 109
-           as.Date("01/03/2007", format="%m/%d/%Y"),  # 110
-           as.Date("01/03/2009", format="%m/%d/%Y"),  # 111
-           as.Date("01/03/2011", format="%m/%d/%Y"),  # 112
-           as.Date("01/03/2013", format="%m/%d/%Y"))  # 113
+start <- as.Date(c(
+     "01/03/2005", # 109
+     "01/03/2007",  # 110
+     "01/03/2009",  # 111
+     "01/03/2011",  # 112
+     "01/03/2013"), 
+     format = "%m/%d/%Y")  # 113
 
-end   <- c(as.Date("01/02/2005", format="%m/%d/%Y"),  # 108
-           as.Date("01/02/2007", format="%m/%d/%Y"),  # 109
-           as.Date("01/02/2009", format="%m/%d/%Y"),  # 110
-           as.Date("01/02/2011", format="%m/%d/%Y"),  # 111
-           as.Date("01/02/2013", format="%m/%d/%Y"),  # 112
-           as.Date("01/02/2015", format="%m/%d/%Y"))  # 113
+end   <- as.Date(c(
+     "01/03/2007", # 109
+     "01/03/2009",  # 110
+     "01/03/2011",  # 111
+     "01/03/2013",  # 112
+     "01/03/2015"), 
+     format = "%m/%d/%Y")  # 113
 
-congress <- c(108:113)
+congress <- c(109:113)
 
 set_congress <- Vectorize(function(d) { congress[between(d, start, end)] })
 JSF$congress <- set_congress(JSF$effectivedate)
@@ -157,7 +159,7 @@ JSF$congress <- set_congress(JSF$effectivedate)
 
 make_adjacency <- function(cong, dta=JSF)
 {
-    dta <- dta[congress == cong]
+    dta <- dta[cd == cong]
     A <- dta[CJ(unique(JSF$contractingofficeagencyid), unique(JSF$cd)),
              .N, by = .EACHI]
     out <- reshape(as.data.frame(A), v.names = "N", idvar = "cd",
@@ -169,8 +171,8 @@ make_adjacency <- function(cong, dta=JSF)
     out
 }
 
-JSFadj <- lapply(109:112, make_adjacency, dta=JSF)
-names(JSFadj) <- paste0("C", 109:112)
+JSFadj <- lapply(109:113, make_adjacency, dta=JSF)
+names(JSFadj) <- paste0("C", 109:113)
 
 
 ## -----------------------------------------------------------------------------

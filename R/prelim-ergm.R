@@ -57,9 +57,9 @@ save(mod1, mod1_diag, gof1, coefplot1, file = "mod1.RData")
 ## Model 2
 mod2 <- ergm(FullNet ~ edges
              + gwb1degree(0.2, fixed=TRUE)
-             + gwb2degree(0, fixed=TRUE),
-             + b2star(2:4),
-             + edgecov("dollarsobligated"),
+             + gwb2degree(0, fixed=TRUE)
+             + b2star(2:4)
+             + edgecov("dollars"),
              control=ctrl, verbose=TRUE)
 
 mod2_diag <- mcmc.diagnostics(mod2)
