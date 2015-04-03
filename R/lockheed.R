@@ -1,0 +1,41 @@
+###############################################################################
+## Lockheed Martin Campaign Contributions to Congress: 2006-2012
+##
+###############################################################################
+
+#install.packages("gdata")
+
+#setwd("~/Desktop/JSF/lobby_data")
+
+#require("gdata")
+
+#lockheed <- read.xls("lockheed.xls")
+
+#lockheed <- as.data.frame(lockheed)
+
+#save(lockheed, file = "lockheed.RData")
+
+lockheed <- load("~/Desktop/JSF/lobby_data/lockheed.RData")
+
+lockheed <- subset(lockheed, select=c("cycle",
+                                      "date",
+                                      "contributor_name",
+                                      "recipient_name",
+                                      "recipient_party",
+                                      "recipient_state",
+                                      "recipient_state_held",
+                                      "district",
+                                      "district_held",
+                                      "amount",
+                                      "committee_name",
+                                      "seat_status",
+                                      "seat_result"))
+
+lockheed2006 <- subset(lockheed, cycle == 2006) 
+
+lockheed2008 <- subset(lockheed, cycle == 2008) 
+
+lockheed2010 <- subset(lockheed, cycle == 2010) 
+
+lockheed2012 <- subset(lockheed, cycle == 2012) 
+

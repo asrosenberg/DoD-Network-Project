@@ -14,6 +14,7 @@ require(texreg)
 ## Load data
 JSF <- load("data/JSF-networks.RData")
 
+load("data/mod1.RData")
 
 ## -----------------------------------------------------------------------------
 ## Estimate ERGMs
