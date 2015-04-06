@@ -11,8 +11,6 @@ house_assignments <- house_assignments[2:9255,]
 
 #rownames(house_assignments) <- NULL
 
+house_assignments$Congress <- as.numeric(as.character(house_assignments$Congress))
 
-
-house_assignments <- subset(house_assignments, Congress == "109" & Congress == "110"
-                           & Congress == "111"
-                           & Congress == "112")
+house_assignments <- subset(house_assignments, Congress > 108)
