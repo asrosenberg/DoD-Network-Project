@@ -5,17 +5,19 @@
 
 #install.packages("gdata")
 
-require("gdata")
+#require("gdata")
 
-setwd("~/Desktop/JSF/lobby_data")
+#setwd("~/Desktop/JSF/lobby_data")
 
-lockheed <- read.xls("lockheed.xls")
+#lockheed <- read.xls("lockheed.xls")
 
-lockheed <- as.data.frame(lockheed)
+#lockheed <- as.data.frame(lockheed)
 
-save(lockheed, file = "lockheed.RData")
+#save(lockheed, file = "lockheed.csv")
 
-lockheed <- load("~/Dropbox/GitHub/DoD-Network-Project/data/lockheed.RData")
+setwd("~/Dropbox/GitHub/DoD-Network-Project/data")
+
+lockheed <- load("~/Dropbox/GitHub/DoD-Network-Project/data/lockheed.csv")
 
 lockheed <- subset(lockheed, select=c("cycle",
                                       "date",
