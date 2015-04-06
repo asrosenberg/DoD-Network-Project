@@ -2,10 +2,8 @@ library(xergm)
 
 load(file="data/simple-time-slices.RData")
 
-
 JSFnets_0 <- list(JSFnets[[2]], JSFnets[[3]], JSFnets[[4]], JSFnets[[5]], JSFnets[[6]], JSFnets[[7]])
 JSFnets_1 <- list(JSFnets[[1]], JSFnets[[2]], JSFnets[[3]], JSFnets[[4]], JSFnets[[5]], JSFnets[[6]])
-
 
 fit <- btergm(JSFnets ~ edges, R = 100)
 summary(fit)

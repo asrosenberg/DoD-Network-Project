@@ -156,7 +156,6 @@ end   <- as.Date(c(
 time_slices <- seq_len(length(start))
 
 set_congress <- Vectorize(function(d) { time_slices[between(d, start, end)] })
-JSF$effectivedate <- as.Date(JSF$effectivedate, "%m/%d/%Y")
 
 # Jason, don't fuck with this.
 JSF$congress <- 1
@@ -167,14 +166,17 @@ JSF$congress[JSF$effectivedate >= start[5] & JSF$effectivedate <= end[5]] <- 5
 JSF$congress[JSF$effectivedate >= start[6] & JSF$effectivedate <= end[6]] <- 6
 JSF$congress[JSF$effectivedate >= start[7] & JSF$effectivedate <= end[7]] <- 7
 
+JSF$year <- cut(JSF$signeddate, "year")
+uniq_year <- sort(unique(JSF$year))
+
 
 ## -----------------------------------------------------------------------------
 ## Create Adjacency Matrices for the 4 congresses of interest: 109--112
 ## -----------------------------------------------------------------------------
 
-make_adjacency <- function(cong, dta=JSF)
+make_adjacency <- function(year_val, dta=JSF)
 {
-     dta <- dta[congress == cong]
+     dta <- dta[year == year_val]
      A <- dta[CJ(unique(JSF$contractingofficeagencyid), unique(JSF$cd)),
               .N, by = .EACHI]
      out <- reshape(as.data.frame(A), v.names = "N", idvar = "cd",
@@ -207,17 +209,15 @@ make_adjacency <- function(cong, dta=JSF)
                   dollars=as.vector(Dol))
      tmp <- tmp[!is.na(tmp[,3]),]
      
-     
-     
      ## Warning: There are negative dollar amounts.
      out %e% "dollars" <- tmp[,3]
-     
-     
      
      out
 }
 
-JSFadj <- lapply(time_slices, make_adjacency, dta=JSF)
+#JSFnets <- lapply(time_slices, make_adjacency, dta=JSF)
+JSFnets <- lapply(uniq_year, make_adjacency, dta=JSF)
+JSFadj <- lapply(JSFnets, as.matrix)
 names(JSFadj) <- paste0("C", time_slices)
 
 
@@ -226,7 +226,7 @@ names(JSFadj) <- paste0("C", time_slices)
 ## -----------------------------------------------------------------------------
 
 #JSFnets <- lapply(JSFadj, network, directed=FALSE, bipartite=TRUE)
-JSFnets <- JSFadj
+
 
 # -----------------------------------------------------------------------------
 # Add covariates to FullNet
