@@ -3,18 +3,6 @@
 ##
 ###############################################################################
 
-#install.packages("gdata")
-
-#require("gdata")
-
-#setwd("~/Desktop/JSF/lobby_data")
-
-#lockheed <- read.xls("lockheed.xls")
-
-#lockheed <- as.data.frame(lockheed)
-
-#save(lockheed, file = "lockheed.csv")
-
 setwd("~/Dropbox/GitHub/DoD-Network-Project/data")
 
 lockheed <- load("~/Dropbox/GitHub/DoD-Network-Project/data/lockheed.csv")
