@@ -6,6 +6,7 @@ setwd("~/Dropbox/DoD/data")
 house_assignments <- read.csv("stewart_woon.csv", header = TRUE)
 colnames(house_assignments) <- NA
 cols <- as.matrix(house_assignments[1,])
+cols[,19] <- "state_name"
 colnames(house_assignments) <- cols
 house_assignments <- house_assignments[2:9255,]
 
@@ -14,3 +15,6 @@ house_assignments <- house_assignments[2:9255,]
 house_assignments$Congress <- as.numeric(as.character(house_assignments$Congress))
 
 house_assignments <- subset(house_assignments, Congress > 108)
+house_assignments[1
+house_assignments$c_district <- paste(house_assignments$state_name, 
+                                      house_assignments$CD, sep = '')
