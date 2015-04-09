@@ -18,8 +18,8 @@ house_assignments$Congress <- as.numeric(as.character(house_assignments$Congress
 
 house_assignments <- subset(house_assignments, Congress > 108)
 
-house_assignments <- subset(house_assignments, committee == "Appropriations" | 
-                                 committee == "Armed Services")
+#house_assignments <- subset(house_assignments, committee == "Appropriations" | 
+#                                 committee == "Armed Services")
 
 house_assignments$cd <- paste(house_assignments$state_name, 
                                       house_assignments$CD, sep = '')
@@ -73,10 +73,11 @@ JSF$lastdatetoorder        <- as.Date(JSF$lastdatetoorder, "%m/%d/%Y")
 
 ## make a new congressional district field
 ## copy in old congresionaldistrict
-## change values "MS00" and "TX00"
+## change values "MS00" and "TX00" and "MT00"
 JSF$cd <- JSF$congressionaldistrict
 JSF$cd[which(JSF$congressionaldistrict == "MS00")] <- "MS04"
 JSF$cd[which(JSF$congressionaldistrict == "TX00")] <- "TX12"
+JSF$cd[which(JSF$congressionaldistrict == "MT00")] <- "MT01"
 
 ## Let's see how many NAs we have for CD
 table(is.na(JSF$cd))  # missingness here from multinational firms
@@ -119,6 +120,34 @@ set_congress <- Vectorize(function(d) { congress[between(d, start, end)] })
 JSF$Congress <- set_congress(JSF$effectivedate)
 
 
+# Subset both JSF and house_assignments by Congress
+JSF_109 <- subset(JSF, Congress == 109)
+JSF_110 <- subset(JSF, Congress == 110)
+JSF_111 <- subset(JSF, Congress == 111)
+JSF_112 <- subset(JSF, Congress == 112)
 
+house_109 <- subset(house_assignments, Congress == 109)
+house_110 <- subset(house_assignments, Congress == 110)
+house_111 <- subset(house_assignments, Congress == 111)
+house_112 <- subset(house_assignments, Congress == 112)
 
-merge_JSF_house <- merge(JSF, house_assignments, by = c("cd", "Congress"))
+# Merge house assignments and JSF by Congress
+house_merge_109 <- merge(JSF_109, house_109, by.x = "cd", by.y = "cd", all.x = TRUE)
+house_merge_109 <- subset(house_merge_109,
+                          !duplicated(house_merge_109$unique_transaction_id))
+house_merge_110 <- merge(JSF_110, house_110, by.x = "cd", by.y = "cd", all.x = TRUE)
+house_merge_110 <- subset(house_merge_110,
+                          !duplicated(house_merge_110$unique_transaction_id))
+house_merge_111 <- merge(JSF_111, house_111, by.x = "cd", by.y = "cd", all.x = TRUE)
+house_merge_111 <- subset(house_merge_111,
+                          !duplicated(house_merge_111$unique_transaction_id))
+house_merge_112 <- merge(JSF_112, house_112, by.x = "cd", by.y = "cd", all.x = TRUE)
+house_merge_112 <- subset(house_merge_112,
+                          !duplicated(house_merge_112$unique_transaction_id))
+
+# Turn each Congress into one big DF
+house_JSF <- rbind(house_merge_109, house_merge_110, house_merge_111, house_merge_112)
+
+# Save it
+save(house_JSF, file = "house_subcom_JSF.RData")
+
