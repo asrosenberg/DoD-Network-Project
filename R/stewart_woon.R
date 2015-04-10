@@ -157,5 +157,7 @@ house_JSF$Committee[house_JSF$committee == "Armed Services" | house_JSF$committe
 # Save it
 save(house_JSF, file = "house_subcom_JSF.RData")
 
+# Save the house merge dataframes by Congress
+save(house_merge_109, house_merge_110, house_merge_111, house_merge_112, file = "house_merge_Congress.RData")
 
 
