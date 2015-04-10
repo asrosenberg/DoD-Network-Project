@@ -148,6 +148,14 @@ house_merge_112 <- subset(house_merge_112,
 # Turn each Congress into one big DF
 house_JSF <- rbind(house_merge_109, house_merge_110, house_merge_111, house_merge_112)
 
+# Code dummy variable, 1 for Approp or Armed Services, 0 else
+house_JSF$Committee <- 0
+house_JSF$Committee == 1 <- house_JSF$committee == "Armed Services"  
+
+house_JSF$Committee[house_JSF$committee == "Armed Services" | house_JSF$committee == "Appropriations"] <- 1
+                                       
 # Save it
 save(house_JSF, file = "house_subcom_JSF.RData")
+
+
 
