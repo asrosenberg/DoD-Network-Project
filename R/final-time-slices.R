@@ -160,8 +160,19 @@ names(final_JSFadj) <- paste0("C", time_slices)
 final_JSFnets <- final_JSFadj
 
 # -----------------------------------------------------------------------------
-# Add covariates to FullNet
+# Add node covariates to FullNet
 # -----------------------------------------------------------------------------
+
+for (i in 1:length(final_JSFnets)) {
+     final_JSFnets[[i]] <- network(final_JSFnets[[i]]) 
+     # turn each outcome net into a network object
+     final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "ln_contracts", 
+                                        ln_contracts)  # add as vertex attribute
+     final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "ln_contrib", 
+                                        ln_contrib) # add as vertex attribute
+     final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "Committee", 
+                                        Committee) # add as vertex attribute
+}
 
 # -----------------------------------------------------------------------------
 # Save
