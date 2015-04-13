@@ -6,21 +6,22 @@
 
 load("dod_all.RData")
 
-dod <- subset(dod_all, select = c("congressionaldistrict",
-                              "dollarsobligated",
-                              "mod_parent",
-                              "principalnaicscode",
-                              "systemequipmentcode"))
+dod_all <- subset(dod, select = c("congressionaldistrict",
+                                  "dollarsobligated",
+                                  "mod_parent",
+                                  "principalnaicscode",
+                                  "systemequipmentcode"))
 
 ## Rename columns
-names(dod)[1]<-"cd"
-names(dod)[2]<-"dollars"
-names(dod)[3]<-"contractor"
-names(dod)[4]<-"platform"
+names(dod_all)[1]<-"cd"
+names(dod_all)[2]<-"dollars"
+names(dod_all)[3]<-"contractor"
+names(dod_all)[4]<-"naics"
+names(dod_all)[5]<-"platform"
 
 
-##Add NA's to cells where we have blank values
-dod[dod==""]  <- NA
+## Add NA's to cells where we have blank values
+dod_all[dod_all==""]  <- NA
 
 ## Take NA's out
 completeFun <- function(data, desiredCols) {
@@ -28,40 +29,51 @@ completeFun <- function(data, desiredCols) {
      return(data[completeVec, ])
 }
 
-dod <- completeFun(dod)
+dod_all <- completeFun(dod_all)
 
-save(dod, file = "dod_2004.Rdata")
+save(dod_all, file = "dod_2004.Rdata")
 
-jsf_cd <- read.csv("~/Desktop/JSF/cd/cd.csv")
-save(jsf_cd, file = "jsf_cd.Rdata")
 
 ###############################################################################
 require(data.table)
 
-load("~/Desktop/JSF/comparative_advantage/dod_2004.RData")
-load("~/Desktop/JSF/cd/jsf_cd.RData")
+load("dod_2004.RData")
+load("jsf_cd.RData")
+load("JSF_naics.RData")
 
 ## Remove JSF contracts to get a measure of Pre-JSF comparative advantage
-unique(dod$platform) ## 314 unique defense platforms
+unique(dod_all$platform) ## 314 unique defense platforms
 
-dod1 <- subset(dod, dod$platform != "198: JSF (F-35) ") # remove JSF programs
+dod_all <- subset(dod_all, dod_all$platform != "198: JSF (F-35) ") # remove JSF programs
 
-dod1 <- subset(dod, dod$contractor != "LOCKHEED MARTIN CORPORATION")
+dod_all <- subset(dod_all, dod_all$contractor != "LOCKHEED MARTIN CORPORATION")
 
-dod1 <- dod[, c("cd","dollars")] # drop year column
+dod_all <- merge(jsf_cd, dod_all, by.x = "cd", all.x = TRUE) # merge!
 
-dod1 <- merge(jsf_cd, dod1, by.x = "cd", all.x = TRUE) # merge!
+unique(dod_all$cd) # 115 unique CDs = matches JSF rows!
 
-unique(dod1$cd) # 115 unique CDs = matches JSF rows!
+dod_all$dollars[is.na(dod_all$dollars)] <- 0 # set NAs to 0
 
-dod1$dollars[is.na(dod1$dollars)] <- 0 # set NAs to 0
+dod_all <- merge(JSF_naics, dod_all, by.x = "naics", all.x = TRUE)
 
-dod1 <- data.table(dod1) # for data table magic
 
-dod1 <- dod1[, lapply(.SD, sum), by = cd] # sum CD contributions
 
-dod1$ln_dollars <- log1p(dod1$dollars) # ln(ammount)
+######
 
-save(dod1, file = "comparative_advantage.Rdata")
+dod_all <- data.table(dod_all) # for data table magic
+
+dod_all <- dod_all[, .(sum=sum(dollars)), by=.(cd)] # sum CD contributions
+
+names(dod_all)[2]<-"dollars"
+
+dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
+
+dod_all <- dod_all[-116,]
+
+dod_all[115, 2] <- 0
+     
+dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
+
+save(dod_all, file = "comparative_advantage.Rdata")
 
 
