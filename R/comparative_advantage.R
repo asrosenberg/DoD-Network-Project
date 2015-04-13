@@ -2,13 +2,14 @@
 ## Pre-JSF Comparative Advantage Variable
 ###############################################################################
 
-setwd("~/Desktop/JSF/comparative_advantage")
+#setwd("~/Desktop/JSF/comparative_advantage")
 
-load("~/Desktop/JSF/comparative_advantage/dod_all.RData")
+load("dod_all.RData")
 
-dod <- subset(dod, select = c("congressionaldistrict",
+dod <- subset(dod_all, select = c("congressionaldistrict",
                               "dollarsobligated",
                               "mod_parent",
+                              "principalnaicscode",
                               "systemequipmentcode"))
 
 ## Rename columns
