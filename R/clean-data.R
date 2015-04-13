@@ -204,6 +204,15 @@ tmp <- tmp[!is.na(tmp[,3]),]
 FullNet %e% "dollars" <- tmp[,3]
 
 ## -----------------------------------------------------------------------------
+## Principal NAICS codes for JSF firms
+## -----------------------------------------------------------------------------
+
+# create a vector of unique NAICS codes for contractors
+JSF_naics <- as.vector(unique(JSF$principalnaicscode))
+
+save(JSF_naics, file="JSF_naics.RData")
+
+## -----------------------------------------------------------------------------
 ## Save
 ## -----------------------------------------------------------------------------
 
