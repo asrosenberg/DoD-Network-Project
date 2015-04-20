@@ -93,7 +93,7 @@ final_JSFnets_1 <- list(final_JSFnets[[1]], final_JSFnets[[2]], final_JSFnets[[3
                         final_JSFnets[[4]], final_JSFnets[[5]], final_JSFnets[[6]])
 
 
-
+save(final_JSFnets, final_JSFnets_0, final_JSFnets_1, file = "analysis.RData")
 
 
 #fit <- btergm(final_JSFnets ~ edges, R = 100)
@@ -139,6 +139,10 @@ summary(fit)
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 # TERGM with each new vertex attribute
+library(xergm)
+library(texreg)
+library(network)
+load("analysis.RData")
 fit1 <- btergm(final_JSFnets_0 ~ edges +
                    b2star(2:3) + 
                    edgecov(final_JSFnets_1), 
@@ -155,7 +159,7 @@ fit3 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
                     edgecov(final_JSFnets_1) + nodefactor("Committee")
                + edgecov(final_JSFnets_1, attrname = "dollars"), 
-               R = 5000)
+               R = 1000)
 summary(fit3, level = 0.90)
 screenreg(fit3)
 
@@ -163,7 +167,7 @@ fit4 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
                     edgecov(final_JSFnets_1) + nodefactor("Committee")
                + edgecov(final_JSFnets_1, attrname = "dollars")
-               + nodecov("ln_contrib"), 
+               + nodecov("contracts"), 
                R = 1000)
 summary(fit4)
 
