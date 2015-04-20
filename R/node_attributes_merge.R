@@ -11,13 +11,20 @@ attributes_110$cd <- gsub("([A-Z]{2})0([1-9])", "\\1\\2", attributes_110$cd, per
 attributes_111$cd <- gsub("([A-Z]{2})0([1-9])", "\\1\\2", attributes_111$cd, perl=TRUE)
 attributes_112$cd <- gsub("([A-Z]{2})0([1-9])", "\\1\\2", attributes_112$cd, perl=TRUE)
 
-### Un-log all of the contracts and contributions
-final_JSF_109$ln_contrib <- exp(final_JSF_109$ln_contrib)
-final_JSF_109$ln_contracts <- exp(final_JSF_109$ln_contracts)
+
+# Let's try merging the Congresses
+final_JSF_109 <- merge(house_merge_109, attributes_109, by.x = "cd", all.x = TRUE)
+final_JSF_110 <- merge(house_merge_110, attributes_110, by.x = "cd", all.x = TRUE)
+final_JSF_111 <- merge(house_merge_111, attributes_111, by.x = "cd", all.x = TRUE)
+final_JSF_112 <- merge(house_merge_112, attributes_112, by.x = "cd", all.x = TRUE)
 
 ### Un-log all of the contracts and contributions
-final_JSF_110$ln_contrib <- exp(final_JSF_110$ln_contrib)
-final_JSF_110$ln_contracts <- exp(final_JSF_110$ln_contracts)
+final_JSF_109$contrib <- exp(final_JSF_109$ln_contrib)
+final_JSF_109$contracts <- exp(final_JSF_109$ln_contracts)
+
+### Un-log all of the contracts and contributions
+final_JSF_111$contrib <- exp(final_JSF_111$ln_contrib)
+final_JSF_111$contracts <- exp(final_JSF_111$ln_contracts)
 
 ### Un-log all of the contracts and contributions
 final_JSF_111$ln_contrib <- exp(final_JSF_111$ln_contrib)
@@ -26,12 +33,6 @@ final_JSF_111$ln_contracts <- exp(final_JSF_111$ln_contracts)
 ### Un-log all of the contracts and contributions
 final_JSF_112$ln_contrib <- exp(final_JSF_112$ln_contrib)
 final_JSF_112$ln_contracts <- exp(final_JSF_112$ln_contracts)
-
-# Let's try merging the Congresses
-final_JSF_109 <- merge(house_merge_109, attributes_109, by.x = "cd", all.x = TRUE)
-final_JSF_110 <- merge(house_merge_110, attributes_110, by.x = "cd", all.x = TRUE)
-final_JSF_111 <- merge(house_merge_111, attributes_111, by.x = "cd", all.x = TRUE)
-final_JSF_112 <- merge(house_merge_112, attributes_112, by.x = "cd", all.x = TRUE)
 
 # Make one dataframe 
 final_JSF <- rbind(final_JSF_109, final_JSF_110, final_JSF_111, final_JSF_112)
