@@ -59,6 +59,8 @@ JSF$lastdatetoorder        <- as.Date(JSF$lastdatetoorder, "%m/%d/%Y")
 JSF$cd <- JSF$congressionaldistrict
 JSF$cd[which(JSF$congressionaldistrict == "MS00")] <- "MS04"
 JSF$cd[which(JSF$congressionaldistrict == "TX00")] <- "TX12"
+JSF$cd[which(JSF$congressionaldistrict == "MT00")] <- "MT01"
+
 
 ## Let's see how many NAs we have for CD
 table(is.na(JSF$cd))  # missingness here from multinational firms
