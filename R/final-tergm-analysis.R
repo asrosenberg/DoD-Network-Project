@@ -103,25 +103,26 @@ fit <- btergm(final_JSFnets_0 ~ edges + edgecov(final_JSFnets_1),
               R = 100)
 summary(fit)
 
-fit <- btergm(final_JSFnets_0 ~ edges +
+fit1 <- btergm(final_JSFnets_0 ~ edges +
                    b2star(2:3) + 
                    edgecov(final_JSFnets_1), 
               R = 1000)
-summary(fit)
+summary(fit1)
 
-fit <- btergm(JSFnets_0 ~ edges +
+model <- btergm(final_JSFnets_0 ~ edges +
                    gwb1degree(.5, fixed = TRUE) +
-                   edgecov(JSFnets_1), 
+                   edgecov(final_JSFnets_1), 
               R = 1000)
-summary(fit)
+summary(model)
 
 
-fit <- btergm(JSFnets_0 ~ edges +
+fit3 <- btergm(final_JSFnets_0 ~ edges +
                    b2star(2:3) + 
                    gwb1degree(.5, fixed = TRUE) +
-                   edgecov(JSFnets_1), 
+                   edgecov(final_JSFnets_1), 
               R = 1000)
-summary(fit)
+summary(fit3)
+gof3 <- gof(fit3)
 
 
 # add dollars (or don't)
@@ -132,14 +133,39 @@ fit <- btergm(JSFnets_0 ~ edges +
                    edgecov(JSFnets_1, attrname = "dollars"), 
               R = 1000)
 summary(fit) 
-
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# Analysis from here
+#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # TERGM with each new vertex attribute
-fit <- btergm(final_JSFnets_0 ~ edges +
+fit1 <- btergm(final_JSFnets_0 ~ edges +
                    b2star(2:3) + 
-                   gwb1degree(.5, fixed = TRUE) +
-                   edgecov(final_JSFnets_1) + nodecov("Committee"), 
+                   edgecov(final_JSFnets_1), 
               R = 1000)
-summary(fit) 
+summary(fit1) 
+
+fit2 <- btergm(final_JSFnets_0 ~ edges +
+                    b2star(2:3) + 
+                    edgecov(final_JSFnets_1) + nodefactor("Committee"), 
+               R = 1000)
+summary(fit2)
+
+fit3 <- btergm(final_JSFnets_0 ~ edges +
+                    b2star(2:3) + 
+                    edgecov(final_JSFnets_1) + nodefactor("Committee")
+               + edgecov(final_JSFnets_1, attrname = "dollars"), 
+               R = 5000)
+summary(fit3, level = 0.90)
+screenreg(fit3)
+
+fit4 <- btergm(final_JSFnets_0 ~ edges +
+                    b2star(2:3) + 
+                    edgecov(final_JSFnets_1) + nodefactor("Committee")
+               + edgecov(final_JSFnets_1, attrname = "dollars")
+               + nodematch("ln_contrib"), 
+               R = 1000)
+summary(fit4)
 
 fit <- btergm(final_JSFnets_0 ~ edges +
                    b2star(2:3) + 
