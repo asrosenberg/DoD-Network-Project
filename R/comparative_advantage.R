@@ -2,7 +2,15 @@
 ## Pre-JSF Comparative Advantage Variable
 ###############################################################################
 
+dod_all <- dod_all[which(dod_all$cd=='SC16'),]
+dod_all <- data.table(dod_all) 
+dod_all <- dod_all[, .(sum=sum(dollars)), by=.(cd)] # sum CD contributions
+
+
+
 #setwd
+
+load("JSF-networks.RData")
 
 load("dod_all.RData")
 
@@ -40,7 +48,6 @@ dod_all <- completeFun(dod_all)
 
 save(dod_all, file = "dod_2004.Rdata")
 
-
 ###############################################################################
 require(data.table)
 
@@ -63,24 +70,15 @@ dod_all$dollars[is.na(dod_all$dollars)] <- 0 # set NAs to 0
 
 dod_all <- merge(JSF_naics, dod_all, by.x = "naics", all.x = TRUE)
 
-
-
-######
-
 dod_all <- data.table(dod_all) # for data table magic
 
 dod_all <- dod_all[, .(sum=sum(dollars)), by=.(cd)] # sum CD contributions
 
 names(dod_all)[2]<-"dollars"
 
-#dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
-
-#dod_all <- dod_all[-116,]
-
-dod_all[115, 2] <- 0
-     
-#dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
+dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
 
 save(dod_all, file = "comparative_advantage.Rdata")
 
-
+# dod_all[115, 2] <- 25194
+# dod_all[115, 3] <- 10.13436
