@@ -66,13 +66,13 @@ dod_all <- dod_all[, .(sum=sum(dollars)), by=.(cd)] # sum CD contributions
 
 names(dod_all)[2]<-"dollars"
 
-dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
+#dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
 
 dod_all <- dod_all[-116,]
 
 dod_all[115, 2] <- 0
      
-dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
+#dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
 
 save(dod_all, file = "comparative_advantage.Rdata")
 
