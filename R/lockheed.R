@@ -1,11 +1,13 @@
 ###############################################################################
 ## Lockheed Martin Campaign Contributions to Congress: 2006-2012
-##
+## Data from the Sunlight Foundation
 ###############################################################################
 
-setwd("~/Dropbox/GitHub/DoD-Network-Project/data")
+#setwd("~/Dropbox/GitHub/DoD-Network-Project/data")
 
-lockheed <- load("~/Dropbox/GitHub/DoD-Network-Project/data/lockheed.csv")
+lockheed <- load("lockheed.csv")
+
+lockheed <- as.data.frame(lockheed)
 
 lockheed <- subset(lockheed, select=c("cycle",
                                       "date",
