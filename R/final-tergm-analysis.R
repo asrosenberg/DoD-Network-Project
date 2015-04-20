@@ -163,7 +163,7 @@ fit4 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
                     edgecov(final_JSFnets_1) + nodefactor("Committee")
                + edgecov(final_JSFnets_1, attrname = "dollars")
-               + nodematch("ln_contrib"), 
+               + nodecov("ln_contrib"), 
                R = 1000)
 summary(fit4)
 
