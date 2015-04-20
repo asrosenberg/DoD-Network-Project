@@ -4,11 +4,28 @@
 load("house_merge_Congress.RData")
 load("node_attributes.RData")
 
+
 # Make the CD format the same for node attributes data
 attributes_109$cd <- gsub("([A-Z]{2})0([1-9])", "\\1\\2", attributes_109$cd, perl=TRUE)
 attributes_110$cd <- gsub("([A-Z]{2})0([1-9])", "\\1\\2", attributes_110$cd, perl=TRUE)
 attributes_111$cd <- gsub("([A-Z]{2})0([1-9])", "\\1\\2", attributes_111$cd, perl=TRUE)
 attributes_112$cd <- gsub("([A-Z]{2})0([1-9])", "\\1\\2", attributes_112$cd, perl=TRUE)
+
+### Un-log all of the contracts and contributions
+final_JSF_109$ln_contrib <- exp(final_JSF_109$ln_contrib)
+final_JSF_109$ln_contracts <- exp(final_JSF_109$ln_contracts)
+
+### Un-log all of the contracts and contributions
+final_JSF_110$ln_contrib <- exp(final_JSF_110$ln_contrib)
+final_JSF_110$ln_contracts <- exp(final_JSF_110$ln_contracts)
+
+### Un-log all of the contracts and contributions
+final_JSF_111$ln_contrib <- exp(final_JSF_111$ln_contrib)
+final_JSF_111$ln_contracts <- exp(final_JSF_111$ln_contracts)
+
+### Un-log all of the contracts and contributions
+final_JSF_112$ln_contrib <- exp(final_JSF_112$ln_contrib)
+final_JSF_112$ln_contracts <- exp(final_JSF_112$ln_contracts)
 
 # Let's try merging the Congresses
 final_JSF_109 <- merge(house_merge_109, attributes_109, by.x = "cd", all.x = TRUE)
