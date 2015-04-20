@@ -150,7 +150,7 @@ house_JSF <- rbind(house_merge_109, house_merge_110, house_merge_111, house_merg
 
 # Code dummy variable, 1 for Approp or Armed Services, 0 else
 house_JSF$Committee <- 0
-house_JSF$Committee == 1 <- house_JSF$committee == "Armed Services"  
+#house_JSF$Committee == 1 <- house_JSF$committee == "Armed Services"  
 
 house_JSF$Committee[house_JSF$committee == "Armed Services" | house_JSF$committee == "Appropriations"] <- 1
                                        

@@ -91,8 +91,8 @@ final_JSF$effectivedate <- as.Date(final_JSF$effectivedate, "%m/%d/%Y")
 
 # Jason, don't fuck with this.
 final_JSF$congress <- 1
-final_JSF$congress[final_JSF$effectivedate >= start[2] & final_JSF$effectivedate <= end[2]] <- 2
-final_JSF$congress[final_JSF$effectivedate >= start[3] & final_JSF$effectivedate <= end[3]] <- 3
+final_JSF$congress[final_JSF$effectivedate >= start[2] & final_JSF$effectivedate <= end[3]] <- 2
+final_JSF$congress[final_JSF$effectivedate >= start[3] & final_JSF$effectivedate <= end[5]] <- 3
 final_JSF$congress[final_JSF$effectivedate >= start[4] & final_JSF$effectivedate <= end[4]] <- 4
 final_JSF$congress[final_JSF$effectivedate >= start[5] & final_JSF$effectivedate <= end[5]] <- 5
 final_JSF$congress[final_JSF$effectivedate >= start[6] & final_JSF$effectivedate <= end[6]] <- 6
@@ -166,13 +166,13 @@ final_JSFnets <- final_JSFadj
 for (i in 1:length(final_JSFnets)) {
      final_JSFnets[[i]] <- network(final_JSFnets[[i]]) 
      # turn each outcome net into a network object
+}
      final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "ln_contracts", 
                                         ln_contracts)  # add as vertex attribute
      final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "ln_contrib", 
                                         ln_contrib) # add as vertex attribute
      final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "Committee", 
                                         Committee) # add as vertex attribute
-}
 
 # -----------------------------------------------------------------------------
 # Save

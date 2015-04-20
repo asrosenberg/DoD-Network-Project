@@ -21,8 +21,20 @@ final_JSF <- rbind(final_JSF_109, final_JSF_110, final_JSF_111, final_JSF_112)
 
 # Make Dummy Again for committee
 # Code dummy variable, 1 for Approp or Armed Services, 0 else
+final_JSF_109$Committee <- 0
+final_JSF_109$Committee[final_JSF_109$committee == "Armed Services" | final_JSF_109$committee == "Appropriations"] <- 1
+final_JSF_110$Committee <- 0
+final_JSF_110$Committee[final_JSF_110$committee == "Armed Services" | final_JSF_110$committee == "Appropriations"] <- 1
+final_JSF_111$Committee <- 0
+final_JSF_111$Committee[final_JSF_111$committee == "Armed Services" | final_JSF_111$committee == "Appropriations"] <- 1
+final_JSF_112$Committee <- 0
+final_JSF_112$Committee[final_JSF_112$committee == "Armed Services" | final_JSF_112$committee == "Appropriations"] <- 1
+
+
 final_JSF$Committee <- 0
 final_JSF$Committee[final_JSF$committee == "Armed Services" | final_JSF$committee == "Appropriations"] <- 1
 
+
+
 # Save it
-save(final_JSF, file = "final_JSF_data.RData")
+save(final_JSF, final_JSF_109, final_JSF_110, final_JSF_111, final_JSF_112, file = "final_JSF_data.RData")
