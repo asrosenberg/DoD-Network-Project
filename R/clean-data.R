@@ -10,7 +10,7 @@ require(network)
 ## setwd("~/jwm/research/contracts")
 
 ## Load data
-JSF <- read.csv("data/JSF.csv.bz2", stringsAsFactors = FALSE)
+JSF <- read.csv("JSF.csv.bz2", stringsAsFactors = FALSE)
 
 ## Just keep a few columns
 JSF <- subset(JSF, select=c("agencyid",
@@ -218,5 +218,5 @@ save(JSF_naics, file="JSF_naics.RData")
 ## Save
 ## -----------------------------------------------------------------------------
 
-save(JSF, FullNet, JSFadj, JSFnets, file="data/JSF-networks.RData",
+save(JSF, FullNet, JSFadj, JSFnets, file="JSF-networks.RData",
      compress="bzip2")

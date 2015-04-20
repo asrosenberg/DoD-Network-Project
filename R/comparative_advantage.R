@@ -2,7 +2,7 @@
 ## Pre-JSF Comparative Advantage Variable
 ###############################################################################
 
-#setwd("~/Desktop/JSF/comparative_advantage")
+#setwd
 
 load("dod_all.RData")
 
@@ -18,6 +18,13 @@ names(dod_all)[2]<-"dollars"
 names(dod_all)[3]<-"contractor"
 names(dod_all)[4]<-"naics"
 names(dod_all)[5]<-"platform"
+
+## make a new congressional district field
+## copy in old congresionaldistrict
+## change values "MS00" and "TX00"
+dod_all$cd[which(dod_all$cd == "MS00")] <- "MS04"
+dod_all$cd[which(dod_all$cd == "TX00")] <- "TX12"
+dod_all$cd[which(dod_all$cd == "MT00")] <- "MT01"
 
 
 ## Add NA's to cells where we have blank values
@@ -68,7 +75,7 @@ names(dod_all)[2]<-"dollars"
 
 #dod_all$ln_dollars <- log1p(dod_all$dollars) # ln(dollars)
 
-dod_all <- dod_all[-116,]
+#dod_all <- dod_all[-116,]
 
 dod_all[115, 2] <- 0
      
