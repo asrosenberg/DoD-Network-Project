@@ -8,52 +8,52 @@ load(file = "final_JSF_data.RData")
 
 # Add Committee, Contracts and Contributions as vertex attributes
 # slice 1 is 109th
-final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "ln_contracts", 
-                                           final_JSF_109$ln_contracts)
-final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "ln_contrib", 
-                                           final_JSF_109$ln_contrib)
+final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "contracts", 
+                                           final_JSF_109$contracts)
+final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "contrib", 
+                                           final_JSF_109$contrib)
 final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "Committee", 
                                            final_JSF_109$Committee)
 # slice 2 is 110th
-final_JSFnets[[2]] <- set.vertex.attribute(final_JSFnets[[2]], "ln_contracts", 
-                                           final_JSF_110$ln_contracts)
-final_JSFnets[[2]] <- set.vertex.attribute(final_JSFnets[[2]], "ln_contrib", 
-                                           final_JSF_110$ln_contrib)
+final_JSFnets[[2]] <- set.vertex.attribute(final_JSFnets[[2]], "contracts", 
+                                           final_JSF_110$contracts)
+final_JSFnets[[2]] <- set.vertex.attribute(final_JSFnets[[2]], "contrib", 
+                                           final_JSF_110$contrib)
 final_JSFnets[[2]] <- set.vertex.attribute(final_JSFnets[[2]], "Committee", 
                                            final_JSF_110$Committee)
 # slice 3 is 110th
-final_JSFnets[[3]] <- set.vertex.attribute(final_JSFnets[[3]], "ln_contracts", 
-                                           final_JSF_110$ln_contracts)
-final_JSFnets[[3]] <- set.vertex.attribute(final_JSFnets[[3]], "ln_contrib", 
-                                           final_JSF_110$ln_contrib)
+final_JSFnets[[3]] <- set.vertex.attribute(final_JSFnets[[3]], "contracts", 
+                                           final_JSF_110$contracts)
+final_JSFnets[[3]] <- set.vertex.attribute(final_JSFnets[[3]], "contrib", 
+                                           final_JSF_110$contrib)
 final_JSFnets[[3]] <- set.vertex.attribute(final_JSFnets[[3]], "Committee", 
                                            final_JSF_110$Committee)
 # slice 4 is 111th
-final_JSFnets[[4]] <- set.vertex.attribute(final_JSFnets[[4]], "ln_contracts", 
-                                           final_JSF_111$ln_contracts)
-final_JSFnets[[4]] <- set.vertex.attribute(final_JSFnets[[4]], "ln_contrib", 
-                                           final_JSF_111$ln_contrib)
+final_JSFnets[[4]] <- set.vertex.attribute(final_JSFnets[[4]], "contracts", 
+                                           final_JSF_111$contracts)
+final_JSFnets[[4]] <- set.vertex.attribute(final_JSFnets[[4]], "contrib", 
+                                           final_JSF_111$contrib)
 final_JSFnets[[4]] <- set.vertex.attribute(final_JSFnets[[4]], "Committee", 
                                            final_JSF_111$Committee)
 # slice 5 is 111th
-final_JSFnets[[5]] <- set.vertex.attribute(final_JSFnets[[5]], "ln_contracts", 
-                                           final_JSF_111$ln_contracts)
-final_JSFnets[[5]] <- set.vertex.attribute(final_JSFnets[[5]], "ln_contrib", 
-                                           final_JSF_111$ln_contrib)
+final_JSFnets[[5]] <- set.vertex.attribute(final_JSFnets[[5]], "contracts", 
+                                           final_JSF_111$contracts)
+final_JSFnets[[5]] <- set.vertex.attribute(final_JSFnets[[5]], "contrib", 
+                                           final_JSF_111$contrib)
 final_JSFnets[[5]] <- set.vertex.attribute(final_JSFnets[[5]], "Committee", 
                                            final_JSF_111$Committee)
 # slice 6 is 112th
-final_JSFnets[[6]] <- set.vertex.attribute(final_JSFnets[[6]], "ln_contracts", 
-                                           final_JSF_112$ln_contracts)
-final_JSFnets[[6]] <- set.vertex.attribute(final_JSFnets[[6]], "ln_contrib", 
-                                           final_JSF_112$ln_contrib)
+final_JSFnets[[6]] <- set.vertex.attribute(final_JSFnets[[6]], "contracts", 
+                                           final_JSF_112$contracts)
+final_JSFnets[[6]] <- set.vertex.attribute(final_JSFnets[[6]], "contrib", 
+                                           final_JSF_112$contrib)
 final_JSFnets[[6]] <- set.vertex.attribute(final_JSFnets[[6]], "Committee", 
                                            final_JSF_112$Committee)
 # slice 7 is 112th
-final_JSFnets[[7]] <- set.vertex.attribute(final_JSFnets[[7]], "ln_contracts", 
-                                           final_JSF_112$ln_contracts)
-final_JSFnets[[7]] <- set.vertex.attribute(final_JSFnets[[7]], "ln_contrib", 
-                                           final_JSF_112$ln_contrib)
+final_JSFnets[[7]] <- set.vertex.attribute(final_JSFnets[[7]], "contracts", 
+                                           final_JSF_112$contracts)
+final_JSFnets[[7]] <- set.vertex.attribute(final_JSFnets[[7]], "contrib", 
+                                           final_JSF_112$contrib)
 final_JSFnets[[7]] <- set.vertex.attribute(final_JSFnets[[7]], "Committee", 
                                            final_JSF_112$Committee)
 
@@ -70,15 +70,15 @@ slice_three_names <- as.vector(final_JSFnets[[3]] %v% "vertex.names")
 slice_four_names <- as.vector(final_JSFnets[[4]] %v% "vertex.names")
 
 for(i in 1:length(final_JSFnets)){
-     tmp <- (final_JSFnets[[i]] %v% "ln_contrib")
+     tmp <- (final_JSFnets[[i]] %v% "contrib")
      tmp[88:94] <- NA
-     final_JSFnets[[i]] %v% "ln_contrib" <- tmp
+     final_JSFnets[[i]] %v% "contrib" <- tmp
 }
 
 for(i in 1:length(final_JSFnets)){
-     tmp <- (final_JSFnets[[i]] %v% "ln_contracts")
+     tmp <- (final_JSFnets[[i]] %v% "contracts")
      tmp[88:94] <- NA
-     final_JSFnets[[i]] %v% "ln_contracts" <- tmp
+     final_JSFnets[[i]] %v% "contracts" <- tmp
 }
 
 for(i in 1:length(final_JSFnets)){

@@ -167,6 +167,8 @@ for (i in 1:length(final_JSFnets)) {
      final_JSFnets[[i]] <- network(final_JSFnets[[i]]) 
      # turn each outcome net into a network object
 }
+
+
      final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "ln_contracts", 
                                         ln_contracts)  # add as vertex attribute
      final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "ln_contrib", 
