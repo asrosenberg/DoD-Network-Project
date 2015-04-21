@@ -8,6 +8,16 @@ load(file = "final_JSF_data.RData")
 
 # Add Committee, Contracts and Contributions as vertex attributes
 # slice 1 is 109th
+final_JSF_109$contracts[is.na(final_JSF_109$contracts)] <- 0
+final_JSF_110$contracts[is.na(final_JSF_110$contracts)] <- 0
+final_JSF_111$contracts[is.na(final_JSF_111$contracts)] <- 0
+final_JSF_112$contracts[is.na(final_JSF_112$contracts)] <- 0
+
+final_JSF_109$contrib[is.na(final_JSF_109$contrib)] <- 0
+final_JSF_110$contrib[is.na(final_JSF_110$contrib)] <- 0
+final_JSF_111$contrib[is.na(final_JSF_111$contrib)] <- 0
+final_JSF_112$contrib[is.na(final_JSF_112$contrib)] <- 0
+
 final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "contracts", 
                                            final_JSF_109$contracts)
 final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "contrib", 
@@ -145,6 +155,7 @@ library(network)
 setwd("~/Dropbox/DoD/data")
 load("analysis.RData")
 fit1 <- btergm(final_JSFnets_0 ~ edges +
+                    + edgecov(final_JSFnets_1)
                    b2star(2:3), 
               R = 1000)
 summary(fit1) 
@@ -171,6 +182,18 @@ fit4 <- btergm(final_JSFnets_0 ~ edges +
                + nodecov("contrib"), 
                R = 1000)
 summary(fit4)
+screenreg(fit4)
+plotreg(list(fit3, fit4))
+
+fit5 <- btergm(final_JSFnets_0 ~ edges +
+                    b2star(2:3) + 
+                    nodefactor("Committee")
+               + edgecov(final_JSFnets_1, attrname = "dollars")
+               + nodecov("contracts"), 
+               R = 1000)
+summary(fit5)
+screenreg(fit4)
+
 
 fit <- btergm(final_JSFnets_0 ~ edges +
                    b2star(2:3) + 
