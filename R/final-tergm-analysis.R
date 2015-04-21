@@ -142,40 +142,41 @@ summary(fit)
 library(xergm)
 library(texreg)
 library(network)
+setwd("~/Dropbox/DoD/data")
 load("analysis.RData")
 fit1 <- btergm(final_JSFnets_0 ~ edges +
-                   b2star(2:3) + 
-                   edgecov(final_JSFnets_1), 
+                   b2star(2:3), 
               R = 1000)
 summary(fit1) 
 
 fit2 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
-                    edgecov(final_JSFnets_1) + nodefactor("Committee"), 
+                    nodefactor("Committee"), 
                R = 1000)
 summary(fit2)
 
 fit3 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
-                    edgecov(final_JSFnets_1) + nodefactor("Committee")
+                    nodefactor("Committee")
                + edgecov(final_JSFnets_1, attrname = "dollars"), 
                R = 1000)
 summary(fit3, level = 0.90)
 screenreg(fit3)
+gof3 <- gof(fit3)
 
 fit4 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
-                    edgecov(final_JSFnets_1) + nodefactor("Committee")
+                    nodefactor("Committee")
                + edgecov(final_JSFnets_1, attrname = "dollars")
-               + nodecov("contracts"), 
+               + nodecov("contrib"), 
                R = 1000)
 summary(fit4)
 
 fit <- btergm(final_JSFnets_0 ~ edges +
                    b2star(2:3) + 
-                   edgecov(final_JSFnets_1) + nodecov("Contributions") + 
-                   nodecov("Contracts") + nodecov("Committee"), 
-              R = 10000)
+                   nodecov("contrib") + 
+                   nodecov("contracts") + nodecov("Committee"), 
+              R = 1000)
 summary(fit)
 
 final_JSFnets_0[[1]] %v% "Contributions"
