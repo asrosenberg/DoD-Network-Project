@@ -143,6 +143,7 @@ library(xergm)
 library(texreg)
 library(network)
 load("analysis.RData")
+
 fit1 <- btergm(final_JSFnets_0 ~ edges +
                    b2star(2:3) + 
                    edgecov(final_JSFnets_1), 
