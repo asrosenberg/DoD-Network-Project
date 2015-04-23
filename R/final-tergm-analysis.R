@@ -154,26 +154,42 @@ library(texreg)
 library(network)
 setwd("~/Dropbox/DoD/data")
 load("analysis.RData")
+
 fit1 <- btergm(final_JSFnets_0 ~ edges +
                     + edgecov(final_JSFnets_1)
                    b2star(2:3), 
               R = 1000)
+
 summary(fit1) 
+screenreg(fit1)
+gof(fit1)
 
 fit2 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
                     nodefactor("Committee"), 
                R = 1000)
+
 summary(fit2)
+screenreg(fit2)
+gof(fit2)
 
 fit3 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
                     nodefactor("Committee")
                + edgecov(final_JSFnets_1, attrname = "dollars"), 
                R = 1000)
+
 summary(fit3, level = 0.90)
 screenreg(fit3)
+<<<<<<< HEAD
 gof3 <- gof(fit3)
+=======
+gof_3 <- gof(fit3, nsim = 25) # Want BIG p-values here
+
+pdf("gof_3.pdf")
+plot(gof_3)
+dev.off()
+>>>>>>> 72a675111ea94a0d6ea1b847550d3e79c89a8950
 
 fit4 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
