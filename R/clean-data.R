@@ -17,7 +17,6 @@ JSF <- subset(JSF, select=c("agencyid",
                             "baseandalloptionsvalue",
                             "congressionaldistrict",
                             "contractingofficeagencyid",
-                            "contractingofficeid",
                             "dollarsobligated",
                             "dunsnumber",
                             "fiscal_year",
@@ -40,11 +39,6 @@ JSF <- subset(JSF, select=c("agencyid",
                             "ultimatecompletiondate",
                             "lastdatetoorder"))
 
-JSF <- JSF[order(JSF$idvpiid, JSF$piid), ]
-
-## Add NA's to cells where we have blank values
-JSF[JSF==""]  <- NA
-
 # Make into R Date format
 JSF$effectivedate          <- as.Date(JSF$effectivedate, "%m/%d/%Y")
 JSF$last_modified_date     <- as.Date(JSF$last_modified_date, "%m/%d/%Y")
@@ -53,14 +47,35 @@ JSF$currentcompletiondate  <- as.Date(JSF$currentcompletiondate, "%m/%d/%Y")
 JSF$ultimatecompletiondate <- as.Date(JSF$ultimatecompletiondate, "%m/%d/%Y")
 JSF$lastdatetoorder        <- as.Date(JSF$lastdatetoorder, "%m/%d/%Y")
 
-## make a new congressional district field
+## Subset even further
+JSF <- subset(JSF, select=c("fiscal_year",
+                            "contractingofficeagencyid", 
+                            "congressionaldistrict", 
+                            "mod_parent",
+                            "dollarsobligated",
+                            "principalnaicscode",
+                            "systemequipmentcode")) 
+
+## Let's remove the few remaining irrelvant territories
+JSF <- subset(JSF, JSF$congressionaldistrict != "PR00") ## Sorry Puerto Rico!
+JSF <- subset(JSF, JSF$congressionaldistrict != "GU00") ## Sorry Guam!
+JSF <- subset(JSF, JSF$congressionaldistrict != "AS00") ## Sorry American Somoa!
+
+## make a new congressional district field, 
 ## copy in old congresionaldistrict
 ## change values "MS00" and "TX00"
 JSF$cd <- JSF$congressionaldistrict
 JSF$cd[which(JSF$congressionaldistrict == "MS00")] <- "MS04"
 JSF$cd[which(JSF$congressionaldistrict == "TX00")] <- "TX12"
 JSF$cd[which(JSF$congressionaldistrict == "MT00")] <- "MT01"
+JSF$cd[which(JSF$congressionaldistrict == "DC00")] <- "DC01"
+JSF$cd[which(JSF$congressionaldistrict == "AK00")] <- "AK01"
+JSF$cd[which(JSF$congressionaldistrict == "DE00")] <- "DE01"
+JSF$cd[which(JSF$congressionaldistrict == "ND00")] <- "ND01"
+JSF$cd[which(JSF$congressionaldistrict == "SE00")] <- "SD01"
 
+## Add NA's to cells where we have blank values
+JSF[JSF==""]  <- NA
 
 ## Let's see how many NAs we have for CD
 table(is.na(JSF$cd))  # missingness here from multinational firms
@@ -73,6 +88,7 @@ completeFun <- function(data, desiredCols) {
 }
 
 JSF <- completeFun(JSF, "cd")
+JSF <- completeFun(JSF, "contractingofficeagencyid")
 
 ## -----------------------------------------------------------------------------
 ## Create Bipartite Networks
@@ -117,16 +133,27 @@ if (max(A) != nrow(JSF[contractingofficeagencyid == max_office & cd == max_cd]))
 FullNet <- network(A, directed=FALSE, bipartite=TRUE, ignore.eval=FALSE,
                    names.eval="contracts")
 
+# Add vertices for both modes to account for complete universe of cases
+FullNet <- add.vertices(FullNet, nv = 16, last.mode = FALSE)
+
+FullNet<- add.vertices(FullNet, nv = 335, last.mode = TRUE)
+
 FullNet %v% "type" <- c(rep("cd", nrow(A)), rep("office", ncol(A)))
 
 ## Plot FullNet
-plot(FullNet, displaylabels=FALSE, pad=0, edge.col="gray", vertex.border=FALSE,
+plot(FullNet,
+     displaylabels=FALSE,
+     #pad=0,
+     edge.col="gray",
+     vertex.border=FALSE,
      vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
      vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
      main = "Bipartite Network of JSF Contracts: FY 2001 - FY 2014")
      legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
      pch = 19)
 
+     
+    
 
 
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
