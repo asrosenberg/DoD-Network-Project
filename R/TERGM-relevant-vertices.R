@@ -105,6 +105,16 @@ final_JSFnets_0 <- list(final_JSFnets[[2]], final_JSFnets[[3]], final_JSFnets[[4
 final_JSFnets_1 <- list(final_JSFnets[[1]], final_JSFnets[[2]], final_JSFnets[[3]], 
                         final_JSFnets[[4]], final_JSFnets[[5]], final_JSFnets[[6]])
 
+## Let's plot out the slices to see what they look like with all the isolates:
+
+plot(final_JSFnets[[1]])
+plot(final_JSFnets[[2]])
+plot(final_JSFnets[[3]])
+plot(final_JSFnets[[4]])
+plot(final_JSFnets[[5]])
+plot(final_JSFnets[[6]])
+plot(final_JSFnets[[7]])
+
 ## A basic model with only endogenous network terms:
 fit1 <- btergm(final_JSFnets_0 ~ edges + edgecov(final_JSFnets_1)
                 + b2star(2:3), R = 1000)
