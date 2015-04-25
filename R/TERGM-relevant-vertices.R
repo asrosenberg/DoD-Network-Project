@@ -105,53 +105,101 @@ final_JSFnets_0 <- list(final_JSFnets[[2]], final_JSFnets[[3]], final_JSFnets[[4
 final_JSFnets_1 <- list(final_JSFnets[[1]], final_JSFnets[[2]], final_JSFnets[[3]], 
                         final_JSFnets[[4]], final_JSFnets[[5]], final_JSFnets[[6]])
 
-
+## A basic model with only endogenous network terms:
 fit1 <- btergm(final_JSFnets_0 ~ edges + edgecov(final_JSFnets_1)
-               + b2star(2:3), R = 1000)
+                + b2star(2:3), R = 1000)
 
 summary(fit1) 
 screenreg(fit1)
 gof(fit1)
 
+
+## A model where we had the dummy for committee:
 fit2 <- btergm(final_JSFnets_0 ~ edges +
+                    edgecov(final_JSFnets_1) +
                     b2star(2:3) + 
                     nodefactor("Committee"), R = 1000)
 
 summary(fit2)
 screenreg(fit2)
+gof(fit2)
 
+# Let's add contract dollar value as an edge-level covariate
 fit3 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
-                    nodefactor("Committee")
-               + edgecov(final_JSFnets_1, attrname = "dollars"), 
-               R = 1000)
+                    nodefactor("Committee") +
+                    edgecov(final_JSFnets_1, attrname = "dollars"), R = 1000)
 summary(fit3)
+screenreg(fit3)
+gof(fit3)
 
+# Let's add campaign contributions as an exogeneous covariate 
 fit4 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
-                    nodefactor("Committee")
-               + edgecov(final_JSFnets_1, attrname = "dollars")
-               + nodecov("contrib"), 
-               R = 1000)
-summary(fit4)
+                    edgecov(final_JSFnets_1, attrname = "dollars") +
+                    nodefactor("Committee") +
+                    nodecov("contrib"), R = 1000)
 
+summary(fit4)
+screenreg(fit4)
+gof(fit4)
+
+# Let's add comparative advantage as an exogeneous covariate 
 fit5 <- btergm(final_JSFnets_0 ~ edges +
                     b2star(2:3) + 
-                    nodefactor("Committee")
-               + edgecov(final_JSFnets_1, attrname = "dollars")
-               + nodecov("contracts"), 
-               R = 1000)
+                    nodefactor("Committee") +
+                    edgecov(final_JSFnets_1, attrname = "dollars") +
+                    nodecov("contracts"), R = 1000)
 summary(fit5)
 screenreg(fit5)
 gof(fit5)
 
-# oh shit these tergm's work so let's save them
-save(fit1, fit2, fit3, fit4, fit5, file ="tergmfits.RData")
+## If we change the outcome network to final_JSFnets_1 we can run a model with
+## both contracts and contributions
 
-fit6 <- btergm(final_JSFnets_0 ~ edges +
+fit6 <- btergm(final_JSFnets_1 ~ edges +
                     b2star(2:3) + 
-                    nodefactor("Committee")
-               + edgecov(final_JSFnets_1, attrname = "dollars")
-               + nodecov("contracts") + nodecov("contrib"), 
-               R = 1000)
+                    edgecov(final_JSFnets_1, attrname = "dollars") +
+                    nodefactor("Committee") +
+                    nodecov("contracts") + 
+                    nodecov("contrib"), R = 1000)
 summary(fit6)
+screenreg(fit6)
+gof(fit6)
+
+
+## A model specification with exogenous covars no lagged IV...
+fit7 <- btergm(final_JSFnets ~ edges +
+                               b2star(2:3) + 
+                               edgecov(final_JSFnets, attrname = "dollars") +
+                               nodefactor("Committee") +
+                               nodecov("contracts") + 
+                               nodecov("contrib"), R = 1000)
+
+summary(fit7)
+
+screenreg(fit7)
+
+gof7 <- gof(fit7, target = final_JSFnets,
+        formula = getformula(fit7), nsim = 100, MCMC.interval = 1000,
+        MCMC.burnin = 10000, classicgof = TRUE,
+        rocprgof = TRUE, checkdegeneracy = TRUE,
+        dsp = TRUE, esp = TRUE, geodist = TRUE, degree = TRUE,
+        idegree = FALSE, odegree = FALSE, kstar = TRUE, istar = FALSE,
+        ostar = FALSE, pr.impute = "poly4", verbose = TRUE)
+
+plot(gof7, roc = TRUE, pr = TRUE)
+
+gof7
+
+plot(gof7, boxplot = FALSE, roc = TRUE, pr = FALSE, 
+     roc.random = TRUE, ylab = "TPR/PPV", 
+     xlab = "FPR/TPR", roc.main = "ROC and PR curves")
+
+plot(gof7, boxplot = FALSE, roc = FALSE, pr = TRUE, 
+     pr.random = TRUE, rocpr.add = TRUE)
+
+
+
+# oh shit these tergm's work so let's save them
+save(fit1, fit2, fit3, fit4, fit5, fit6, fit7, gof7, file ="tergmfits.RData")
