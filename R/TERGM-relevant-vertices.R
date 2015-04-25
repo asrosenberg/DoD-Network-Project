@@ -142,6 +142,8 @@ fit5 <- btergm(final_JSFnets_0 ~ edges +
                + nodecov("contracts"), 
                R = 1000)
 summary(fit5)
+screenreg(fit5)
+gof(fit5)
 
 # oh shit these tergm's work so let's save them
 save(fit1, fit2, fit3, fit4, fit5, file ="tergmfits.RData")
