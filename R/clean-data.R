@@ -148,7 +148,7 @@ plot(FullNet,
      vertex.border=FALSE,
      vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
      vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
-     main = "Bipartite Network of JSF Contracts: FY 2001 - FY 2014")
+     main = "Bipartite Network of JSF Contracts: FY 2005 - FY 2012")
      legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
      pch = 19)
 

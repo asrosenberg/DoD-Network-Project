@@ -5,7 +5,7 @@
 #______________________________________________________________________________
 library(network)
 
-setwd("~/Dropbox/DoD/data")
+#setwd("~/Dropbox/DoD/data")
 load("relevant_cd.RData")
 load("relevant_agencies.RData")
 load("final-time-slices.RData")
@@ -107,29 +107,91 @@ final_JSFnets_1 <- list(final_JSFnets[[1]], final_JSFnets[[2]], final_JSFnets[[3
                         final_JSFnets[[4]], final_JSFnets[[5]], final_JSFnets[[6]])
 
 ## Let's plot out the slices to see what they look like with all the isolates:
-plot(final_JSFnets[[1]])
-plot(final_JSFnets[[2]])
-plot(final_JSFnets[[3]])
-plot(final_JSFnets[[4]])
-plot(final_JSFnets[[5]])
-plot(final_JSFnets[[6]])
-plot(final_JSFnets[[7]])
 
+par(mfrow = c(4, 2), mar = c(0, 0, 1, 0)) #mar = margins command 
 
+plot(final_JSFnets[[1]],
+     displaylabels=FALSE,
+     pad=0,
+     edge.col="gray",
+     vertex.border=FALSE,
+     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
+     main = "FY 2005-2006")
+     #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
+     #pch = 19)
 
+plot(final_JSFnets[[2]],
+     displaylabels=FALSE,
+     pad=0,
+     edge.col="gray",
+     vertex.border=FALSE,
+     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
+     main = "FY 2006-2007")
+     #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
+     #pch = 19)
 
-#adj1 <- as.matrix(final_JSFnets[[1]])
-#adj2 <- as.matrix(final_JSFnets[[2]])
-#adj3 <- as.matrix(final_JSFnets[[3]])
-#adj4 <- as.matrix(final_JSFnets[[4]])
-#adj5 <- as.matrix(final_JSFnets[[5]])
-#adj6 <- as.matrix(final_JSFnets[[6]])
-#adj7 <- as.matrix(final_JSFnets[[7]])
-#adj <- list(adj1, adj2, adj3, adj4, adj5, adj6, adj7)
+plot(final_JSFnets[[3]],
+     displaylabels=FALSE,
+     pad=0,
+     edge.col="gray",
+     vertex.border=FALSE,
+     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
+     main = "FY 2007-2008")
+     #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
+     #pch = 19)
 
-for (i in 1:length(adj)){
-     adj[[i]] <- network(adj[[i]])
-}
+plot(final_JSFnets[[4]],
+     displaylabels=FALSE,
+     pad=0,
+     edge.col="gray",
+     vertex.border=FALSE,
+     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
+     main = "FY 2008-2009")
+     #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
+     #pch = 19)
+
+plot(final_JSFnets[[5]],
+     displaylabels=FALSE,
+     pad=0,
+     edge.col="gray",
+     vertex.border=FALSE,
+     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
+     main = "FY 2009-2010")
+     #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
+     #pch = 19)
+
+plot(final_JSFnets[[6]],
+     displaylabels=FALSE,
+     pad=0,
+     edge.col="gray",
+     vertex.border=FALSE,
+     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
+     main = "FY 2010-2011")
+     #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
+     #pch = 19)
+
+plot(final_JSFnets[[7]],
+     displaylabels=FALSE,
+     pad=0,
+     edge.col="gray",
+     vertex.border=FALSE,
+     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
+     main = "FY 2011-2012")
+     #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
+     #pch = 19)
+
+#______________________________________________________________________________
+#______________________________________________________________________________
+# Time to analyze the TERGM model specifications
+#______________________________________________________________________________
+#______________________________________________________________________________
 
 ## a naive model specification
 fit0 <- btergm(final_JSFnets ~ edges + b2star(2:3), R = 1000)
@@ -201,6 +263,17 @@ plot(gof5, boxplot = FALSE, roc = TRUE, pr = FALSE,
 plot(gof5, boxplot = FALSE, roc = FALSE, pr = TRUE, 
      pr.random = TRUE, rocpr.add = TRUE)
 
+
+## coefficient plot for fit 5
+plotreg(fit5, custom.model.names = "TERGM Model 5", custom.coef.names =
+             c("Edges", 
+               "$V_2$ 2-stars", 
+               "$V_2$ 3-stars", 
+               "Contract Value (Edge Cov.)", 
+               "Committee (Node Factor)", 
+               "Comparative Advantage (Node Cov.)",
+               "Campaign Contributions (Node Cov.)")
+)
 
 # oh shit these tergm's work so let's save them
 save(fit0, fit1, fit2, fit3, fit4, fit5, file ="tergmfits.RData")
