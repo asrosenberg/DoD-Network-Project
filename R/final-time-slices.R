@@ -2,7 +2,7 @@
 require(data.table)
 require(network)
 
-setwd("~/Dropbox/DoD/data")
+#setwd("~/Dropbox/DoD/data")
 load("final_JSF_data.RData")
 ## -----------------------------------------------------------------------------
 ## Create Bipartite Networks
@@ -11,57 +11,6 @@ load("final_JSF_data.RData")
 ## Let's begin by creating a single network with no temporal variation
 setDT(final_JSF)
 setkey(final_JSF, "contractingofficeagencyid", "cd")
-
-## The number of rows that should be in A below.
-# N <- length(unique(JSF$cd)) * length(unique(JSF$contractingofficeagencyid))
-# 
-# A <- JSF[CJ(unique(contractingofficeagencyid), unique(cd)),
-#          .N, by = .EACHI]
-# 
-# ## Stop everything if the rows in A do not match N.
-# if (nrow(A) != N)
-#      stop("The number of rows in A is not correct.")
-# 
-# ## Stop everything if A$N is all 0, means something broke.
-# if (max(A$N) == 0)
-#      stop("No observations recorded in A.")
-# 
-# A <- reshape(as.data.frame(A), v.names = "N", idvar = "cd",
-#              timevar = "contractingofficeagencyid", direction = "wide")
-# 
-# rownames(A) <- A[,1]
-# A[,1] <- NULL
-# A <- as.matrix(A)
-# colnames(A) <- gsub("^N.", "", colnames(A))
-# 
-# ## Verify the data
-# max_idx    <- which(A == max(A), arr.ind = TRUE)
-# max_office <- colnames(A)[max_idx[2]]
-# max_cd     <- rownames(A)[max_idx[1]]
-# if (max(A) != nrow(JSF[contractingofficeagencyid == max_office & cd == max_cd]))
-#      stop("Maximum number of contracts in A does not match that in JSF")
-# 
-# ## Note that this adds an edge attribute, contracts, recording the number of
-# ## contracts recorded between CD and office.
-# 
-# FullNet <- network(A, directed=FALSE, bipartite=TRUE, ignore.eval=FALSE,
-#                    names.eval="contracts")
-# 
-# FullNet %v% "type" <- c(rep("cd", nrow(A)), rep("office", ncol(A)))
-# 
-# ## Plot FullNet
-# plot(FullNet, displaylabels=FALSE, pad=0, edge.col="gray", vertex.border=FALSE,
-#      vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
-#      vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
-#      main = "Bipartite Network of JSF Contracts: FY 2001 - FY 2014")
-# legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
-#        pch = 19)
-
-
-
-## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
-## congresses because many contracts had dates earlier than the 109th and there
-## was one in the 113th.
 
 ## Now you can make more time slices here.
 start <- as.Date(c(
@@ -87,6 +36,7 @@ end   <- as.Date(c(
 time_slices <- seq_len(length(start))
 
 set_congress <- Vectorize(function(d) { time_slices[between(d, start, end)] })
+
 final_JSF$effectivedate <- as.Date(final_JSF$effectivedate, "%m/%d/%Y")
 
 # Jason, don't fuck with this.
