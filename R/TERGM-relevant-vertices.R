@@ -265,15 +265,21 @@ plot(gof5, boxplot = FALSE, roc = FALSE, pr = TRUE,
 
 
 ## coefficient plot for fit 5
-plotreg(fit5, custom.model.names = "TERGM Model 5", custom.coef.names =
+plotreg(fit5, 
+        lwd.inner = 1,
+        custom.model.names = "TERGM Coefficient Plot", 
+        custom.coef.names =
              c("Edges", 
-               "$V_2$ 2-stars", 
-               "$V_2$ 3-stars", 
+               "2-stars (Mode 2)", 
+               "3-stars (Mode 2)", 
                "Contract Value (Edge Cov.)", 
                "Committee (Node Factor)", 
                "Comparative Advantage (Node Cov.)",
                "Campaign Contributions (Node Cov.)")
 )
+
+
+
 
 # oh shit these tergm's work so let's save them
 save(fit0, fit1, fit2, fit3, fit4, fit5, file ="tergmfits.RData")
