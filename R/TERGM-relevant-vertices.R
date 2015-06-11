@@ -268,9 +268,10 @@ plot(gof5, boxplot = FALSE, roc = FALSE, pr = TRUE,
 plotreg(fit5, 
         lwd.inner = 1,
         custom.model.names = "TERGM Coefficient Plot", 
-        omit.coef = "edges",
+        omit.coef = "Edges",
         custom.coef.names =
-             c("2-stars (Mode 2)", 
+             c("Edges",
+               "2-stars (Mode 2)", 
                "3-stars (Mode 2)", 
                "Contract Value (Edge Cov.)", 
                "Committee (Node Factor)", 
@@ -278,6 +279,11 @@ plotreg(fit5,
                "Campaign Contributions (Node Cov.)")
 )
 
+## another coefficient plot 
+install.packages("coefplot")
+library("coefplot")
+
+coefplot(fit5)
 
 
 
