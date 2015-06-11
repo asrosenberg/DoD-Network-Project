@@ -244,6 +244,30 @@ JSF_naics <- na.omit(JSF_naics) # 85 unique NAICS codes for JSF data
 save(JSF_naics, file="JSF_naics.RData")
 
 ## -----------------------------------------------------------------------------
+## Histogram of Dollars Obligated
+## -----------------------------------------------------------------------------
+#install.packages("ggplot2")
+
+JSF$lndollars <- sign(JSF$dollarsobligated) * log(pmax(1, abs(JSF$dollarsobligated)))
+
+library(ggplot2)
+qplot(JSF$lndollars, 
+      geom="histogram",
+      main = "Distribution of F-35 Contract Values: FY 2005 - FY 2012", 
+      xlab = "Ln of Contract Value (USD)",
+      xlim=c(1,25),
+      ylab = "Frequency",
+      fill=I("darkred"), 
+      col=I("black")
+      )
+   
+      
+
+
+
+
+
+## -----------------------------------------------------------------------------
 ## Save
 ## -----------------------------------------------------------------------------
 
