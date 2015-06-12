@@ -6,11 +6,8 @@
 require(data.table)
 require(network)
 
-## NOTE: Set working directory in R to the root of the contracts project.
-## setwd("~/jwm/research/contracts")
-
 ## Load data
-JSF <- read.csv("JSF.csv.bz2", stringsAsFactors = FALSE)
+JSF <- read.csv("data/JSF.csv.bz2", stringsAsFactors = FALSE)
 
 ## Just keep a few columns
 JSF <- subset(JSF, select=c("agencyid",
@@ -142,23 +139,6 @@ FullNet %v% "type" <- c(rep("cd", FullNet$gal$bipartite), rep("office", FullNet$
 
 FullNet
 
-## Plot FullNet
-plot(FullNet,
-     displaylabels=FALSE,
-     displayisolates = FALSE,
-     #pad=0,
-     edge.col="gray",
-     vertex.border=FALSE,
-     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
-     vertex.col=ifelse(FullNet %v% "type" != "cd", "red", "black"),
-     main = "Bipartite Network of JSF Contracts: FY 2005 - FY 2012")
-     #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
-     pch = 19)
-
-     
-    
-
-
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
 ## congresses because many contracts had dates earlier than the 109th and there
 ## was one in the 113th.
@@ -183,7 +163,6 @@ congress <- c(109:113)
 set_congress <- Vectorize(function(d) { congress[between(d, start, end)] })
 JSF$congress <- set_congress(JSF$effectivedate)
 
-
 ## -----------------------------------------------------------------------------
 ## Create Adjacency Matrices for the 4 congresses of interest: 109--112
 ## -----------------------------------------------------------------------------
@@ -207,7 +186,7 @@ names(JSFadj) <- paste0("C", 109:113)
 
 
 ## -----------------------------------------------------------------------------
-## Create Bipartite Networks
+## Create List of Bipartite Networks by Time Slice
 ## -----------------------------------------------------------------------------
 
 JSFnets <- lapply(JSFadj, network, directed=FALSE, bipartite=TRUE)
@@ -244,39 +223,10 @@ JSF_naics <- as.vector(unique(JSF$principalnaicscode))
 JSF_naics[21, 1] <- NA
 JSF_naics[35, 1] <- NA
 JSF_naics <- na.omit(JSF_naics) # 85 unique NAICS codes for JSF data
-save(JSF_naics, file="JSF_naics.RData")
+save(JSF_naics, file = "JSF_naics.RData")
 
 ## -----------------------------------------------------------------------------
-## Histogram of Dollars Obligated
-## -----------------------------------------------------------------------------
-#install.packages("ggplot2")
-
-JSF$lndollars <- sign(JSF$dollarsobligated) * log(pmax(1, abs(JSF$dollarsobligated)))
-
-library(ggplot2)
-
-
-qplot(JSF$lndollars, 
-      geom="histogram",
-      main = "Distribution of F-35 Contract Values: FY 2005 - FY 2012", 
-      xlab = "Ln of Contract Value (USD)",
-      xlim=c(1,25),
-      ylab = "Frequency",
-      fill=I("darkred"), 
-      col=I("black")
-      ) + theme_bw()
-     
-     
-   
-      
-
-
-
-
-
-## -----------------------------------------------------------------------------
-## Save
+## Save the Clean Data
 ## -----------------------------------------------------------------------------
 
-save(JSF, FullNet, JSFadj, JSFnets, file="JSF-networks.RData",
-     compress="bzip2")
+save(JSF, FullNet, JSFadj, JSFnets, file = "JSF-networks.RData", compress = "bzip2")

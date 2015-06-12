@@ -9,8 +9,6 @@ library(texreg)
 library(network)
 library(plyr)
 
-
-#setwd("~/Dropbox/DoD/data")
 load("data/JSF-networks.Rdata")
 load("data/relevant_cd.RData")
 load("data/relevant_agencies.RData")
@@ -306,7 +304,6 @@ results_df <- data.frame(
      Variable = factor(vars, level = rev(vars)),
      color = factor(rep(1:2, each = 3))
      )
-library(ggplot2)
 
 pdf("~/Dropbox/Academic_Conferences/POLNET_2015/coefplot-20150612.pdf", 
     width = 10,  height = 5, pointsize = 24, family = "Palatino")
@@ -327,7 +324,7 @@ boot_df <- data.frame(
      variable = factor(rep(vars, each = 10000), levels = (vars))
 )
 
-pdf("~/Dropbox/Academic_Conferences/POLNET_2015/hists-20150612.pdf", 
+pdf("~/Dropbox/Academic_Conferences/POLNET_2015/poster/hists-20150612.pdf", 
     width = 10,  height = 5, pointsize = 24, family = "Palatino")
 ggplot(boot_df, aes(x = boots)) + 
      geom_density(fill = "#bb0000") + 
