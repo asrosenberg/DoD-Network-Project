@@ -4,28 +4,35 @@
 #______________________________________________________________________________
 #______________________________________________________________________________
 library(network)
+library(xergm)
+library(texreg)
+library(network)
+library(plyr)
+
 
 #setwd("~/Dropbox/DoD/data")
-load("relevant_cd.RData")
-load("relevant_agencies.RData")
-load("final-time-slices.RData")
+load("data/JSF-networks.Rdata")
+load("data/relevant_cd.RData")
+load("data/relevant_agencies.RData")
+load("data/final-time-slices.RData")
+load(file = "data/final_JSF_data.RData")
 
 # We need to see if the network package can auto add nodes to our bipartite net
-add.vertices(final_JSFnets[[1]], nv = 16, last.mode = FALSE)
-add.vertices(final_JSFnets[[2]], nv = 16, last.mode = FALSE)
-add.vertices(final_JSFnets[[3]], nv = 16, last.mode = FALSE)
-add.vertices(final_JSFnets[[4]], nv = 16, last.mode = FALSE)
-add.vertices(final_JSFnets[[5]], nv = 16, last.mode = FALSE)
-add.vertices(final_JSFnets[[6]], nv = 16, last.mode = FALSE)
-add.vertices(final_JSFnets[[7]], nv = 16, last.mode = FALSE)
-
-add.vertices(final_JSFnets[[1]], nv = 335, last.mode = TRUE)
-add.vertices(final_JSFnets[[2]], nv = 335, last.mode = TRUE)
-add.vertices(final_JSFnets[[3]], nv = 335, last.mode = TRUE)
-add.vertices(final_JSFnets[[4]], nv = 335, last.mode = TRUE)
-add.vertices(final_JSFnets[[5]], nv = 335, last.mode = TRUE)
-add.vertices(final_JSFnets[[6]], nv = 335, last.mode = TRUE)
-add.vertices(final_JSFnets[[7]], nv = 335, last.mode = TRUE)
+# add.vertices(final_JSFnets[[1]], nv = 16, last.mode = TRUE)
+# add.vertices(final_JSFnets[[2]], nv = 16, last.mode = TRUE)
+# add.vertices(final_JSFnets[[3]], nv = 16, last.mode = TRUE)
+# add.vertices(final_JSFnets[[4]], nv = 16, last.mode = TRUE)
+# add.vertices(final_JSFnets[[5]], nv = 16, last.mode = TRUE)
+# add.vertices(final_JSFnets[[6]], nv = 16, last.mode = TRUE)
+# add.vertices(final_JSFnets[[7]], nv = 16, last.mode = TRUE)
+# 
+# add.vertices(final_JSFnets[[1]], nv = 335, last.mode = FALSE)
+# add.vertices(final_JSFnets[[2]], nv = 335, last.mode = FALSE)
+# add.vertices(final_JSFnets[[3]], nv = 335, last.mode = FALSE)
+# add.vertices(final_JSFnets[[4]], nv = 335, last.mode = FALSE)
+# add.vertices(final_JSFnets[[5]], nv = 335, last.mode = FALSE)
+# add.vertices(final_JSFnets[[6]], nv = 335, last.mode = FALSE)
+# add.vertices(final_JSFnets[[7]], nv = 335, last.mode = FALSE)
 
 #______________________________________________________________________________
 #______________________________________________________________________________
@@ -33,11 +40,6 @@ add.vertices(final_JSFnets[[7]], nv = 335, last.mode = TRUE)
 #______________________________________________________________________________
 #______________________________________________________________________________
 
-library(xergm)
-library(texreg)
-library(network)
-
-load(file = "final_JSF_data.RData")
 
 # Add Committee, Contracts and Contributions as vertex attributes
 # slice 1 is 109th
@@ -51,54 +53,37 @@ final_JSF_110$contrib[is.na(final_JSF_110$contrib)] <- 0
 final_JSF_111$contrib[is.na(final_JSF_111$contrib)] <- 0
 final_JSF_112$contrib[is.na(final_JSF_112$contrib)] <- 0
 
-final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "contracts", 
-                                           final_JSF_109$contracts)
-final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "contrib", 
-                                           final_JSF_109$contrib)
-final_JSFnets[[1]] <- set.vertex.attribute(final_JSFnets[[1]], "Committee", 
-                                           final_JSF_109$Committee)
-# slice 2 is 110th
-final_JSFnets[[2]] <- set.vertex.attribute(final_JSFnets[[2]], "contracts", 
-                                           final_JSF_110$contracts)
-final_JSFnets[[2]] <- set.vertex.attribute(final_JSFnets[[2]], "contrib", 
-                                           final_JSF_110$contrib)
-final_JSFnets[[2]] <- set.vertex.attribute(final_JSFnets[[2]], "Committee", 
-                                           final_JSF_110$Committee)
-# slice 3 is 110th
-final_JSFnets[[3]] <- set.vertex.attribute(final_JSFnets[[3]], "contracts", 
-                                           final_JSF_110$contracts)
-final_JSFnets[[3]] <- set.vertex.attribute(final_JSFnets[[3]], "contrib", 
-                                           final_JSF_110$contrib)
-final_JSFnets[[3]] <- set.vertex.attribute(final_JSFnets[[3]], "Committee", 
-                                           final_JSF_110$Committee)
-# slice 4 is 111th
-final_JSFnets[[4]] <- set.vertex.attribute(final_JSFnets[[4]], "contracts", 
-                                           final_JSF_111$contracts)
-final_JSFnets[[4]] <- set.vertex.attribute(final_JSFnets[[4]], "contrib", 
-                                           final_JSF_111$contrib)
-final_JSFnets[[4]] <- set.vertex.attribute(final_JSFnets[[4]], "Committee", 
-                                           final_JSF_111$Committee)
-# slice 5 is 111th
-final_JSFnets[[5]] <- set.vertex.attribute(final_JSFnets[[5]], "contracts", 
-                                           final_JSF_111$contracts)
-final_JSFnets[[5]] <- set.vertex.attribute(final_JSFnets[[5]], "contrib", 
-                                           final_JSF_111$contrib)
-final_JSFnets[[5]] <- set.vertex.attribute(final_JSFnets[[5]], "Committee", 
-                                           final_JSF_111$Committee)
-# slice 6 is 112th
-final_JSFnets[[6]] <- set.vertex.attribute(final_JSFnets[[6]], "contracts", 
-                                           final_JSF_112$contracts)
-final_JSFnets[[6]] <- set.vertex.attribute(final_JSFnets[[6]], "contrib", 
-                                           final_JSF_112$contrib)
-final_JSFnets[[6]] <- set.vertex.attribute(final_JSFnets[[6]], "Committee", 
-                                           final_JSF_112$Committee)
-# slice 7 is 112th
-final_JSFnets[[7]] <- set.vertex.attribute(final_JSFnets[[7]], "contracts", 
-                                           final_JSF_112$contracts)
-final_JSFnets[[7]] <- set.vertex.attribute(final_JSFnets[[7]], "contrib", 
-                                           final_JSF_112$contrib)
-final_JSFnets[[7]] <- set.vertex.attribute(final_JSFnets[[7]], "Committee", 
-                                           final_JSF_112$Committee)
+
+add_nodecovs <- function(net_in, df) {
+     net_out <- net_in
+     vertex_names <- do.call(c, lapply(net_in$val, function(i) i$vertex.name))
+     
+     net_out <- set.vertex.attribute(net_out, "contrib", 0)
+     net_out <- set.vertex.attribute(net_out, "contracts", 0)
+     net_out <- set.vertex.attribute(net_out, "Committee", 0)
+     
+     to_change <- ddply(df, .(cd), summarise, 
+                        contrib = (mean(contrib)) / 1e3,
+                        contracts = (mean(contracts)) / 1e9,
+                        Committee = mean(Committee))
+     for (i in 1:nrow(to_change)) {
+          cd_to_change <- to_change$cd[i]
+          ok <- which(vertex_names == cd_to_change)
+          net_out$val[[ok]]$contrib <- to_change$contrib[i]
+          net_out$val[[ok]]$contracts <- to_change$contracts[i]
+          net_out$val[[ok]]$Committee <- to_change$Committee[i]
+     }
+     
+     net_out
+}
+final_JSFnets[[1]] <- add_nodecovs(final_JSFnets[[1]], final_JSF_109)
+final_JSFnets[[2]] <- add_nodecovs(final_JSFnets[[2]], final_JSF_110)
+final_JSFnets[[3]] <- add_nodecovs(final_JSFnets[[3]], final_JSF_110)
+final_JSFnets[[4]] <- add_nodecovs(final_JSFnets[[4]], final_JSF_111)
+final_JSFnets[[5]] <- add_nodecovs(final_JSFnets[[5]], final_JSF_111)
+final_JSFnets[[6]] <- add_nodecovs(final_JSFnets[[6]], final_JSF_112)
+final_JSFnets[[7]] <- add_nodecovs(final_JSFnets[[7]], final_JSF_112)
+
 
 # Lag the network to account for comparative advantage:
 final_JSFnets_0 <- list(final_JSFnets[[2]], final_JSFnets[[3]], final_JSFnets[[4]], 
@@ -285,9 +270,129 @@ library("coefplot")
 
 coefplot(fit5)
 
+## Fit 6
+fit6 <- btergm(final_JSFnets ~ nodecov("contracts") + 
+                    nodefactor("Committee") + 
+                    nodecov("contrib") +
+                    b2star(2:3) + 
+                    edges, R = 10000)
+screenreg(fit6)
+## coefficient plot for fit 5
+plotreg(fit6, 
+        lwd.inner = 1,
+        custom.model.names = "TERGM Coefficient Plot", 
+        omit.coef = "Edges",
+        custom.coef.names =
+             c("Contract Value (Edge Cov.)", 
+               "Committee (Node Factor)", 
+               "Campaign Contributions (Node Cov.)",
+               "2-stars (Mode 2)", 
+               "3-stars (Mode 2)", 
+               "Edges"
+               )
+)
+
+coefplot(fit6)
+vars <- c("Prev. District Defense Contracts\nin $Billions", 
+          "Committee Member\n0-1", 
+          "Campaign Contributions\nin $10k",
+          "2-stars\nDistrict-level", 
+          "3-stars\nDistrict-level", 
+          "Edges")
+results_df <- data.frame(
+     Estimate = coef(fit6),
+     Q025 = apply(fit6@bootsamp, 2, quantile, .025),
+     Q975 = apply(fit6@bootsamp, 2, quantile, .975),
+     Variable = factor(vars, level = rev(vars)),
+     color = factor(rep(1:2, each = 3))
+     )
+library(ggplot2)
+
+pdf("~/Dropbox/Academic_Conferences/POLNET_2015/coefplot-20150612.pdf", 
+    width = 10,  height = 5, pointsize = 24, family = "Palatino")
+ggplot(subset(results_df, Variable != "Edges"),
+       aes(x = Estimate, xmin = Q025, xmax = Q975, y = Variable, color = color, fill = color)) +
+     geom_vline(xintercept = 0, linetype = 3, color = "gray") +
+     geom_errorbarh(height = 0, size = 1, lineend = "round") +
+     geom_point(size = 4) +
+     theme_bw() +
+     ylab("") + xlab("") +
+     ggtitle("TERGM coefficients") +
+     scale_color_manual(name = "color", values = c("#bb0000", "#666666")) +
+     theme(legend.position = "none")
+dev.off()
+
+boot_df <- data.frame(
+     boots <- as.vector(fit6@bootsamp),
+     variable = factor(rep(vars, each = 10000), levels = (vars))
+)
+
+pdf("~/Dropbox/Academic_Conferences/POLNET_2015/hists-20150612.pdf", 
+    width = 10,  height = 5, pointsize = 24, family = "Palatino")
+ggplot(boot_df, aes(x = boots)) + 
+     geom_density(fill = "#bb0000") + 
+     facet_wrap(~ variable, scales = "free") + theme_bw() +
+     xlab("") + ylab("") + ggtitle("Coefficient Bootstrap Distributions") +
+     theme(strip.background = element_rect(fill = "white", color = "white"))
+dev.off()
+
+
+N <- 1000
+Dta <- data.frame(x=sample(c(0,1), N, replace=TRUE),
+                  z=rnorm(N, sd=2))
+Dta$y  <- 0.5 + 0.25*Dta$x - 3.0*Dta$x*Dta$z + rnorm(N)
+Dta$y2 <- 0.5 + 0.25*Dta$x - 3.5*Dta$x*Dta$z + rnorm(N, sd=2)
+
+summary(mod1 <- lm(y  ~ x*z, data=Dta))
+summary(mod2 <- lm(y2 ~ x*z, data=Dta))
+
+newdata <- data.frame(x=c(0, 1), z=c(mean(Dta$z), mean(Dta$z)))
+
+pred1 <- predict(mod1, newdata=newdata, se.fit=TRUE)
+pred2 <- predict(mod2, newdata=newdata, se.fit=TRUE)
+
+low1  <- qnorm(0.05, pred1$fit, sd=pred1$se.fit)
+high1 <- qnorm(0.95, pred1$fit, sd=pred1$se.fit)
+low2  <- qnorm(0.05, pred2$fit, sd=pred2$se.fit)
+high2 <- qnorm(0.95, pred2$fit, sd=pred2$se.fit)
+
+Eff <- cbind(pred1$fit, pred2$fit)
+colnames(Eff) <- c("Model 1", "Model 2")
+rownames(Eff) <- c("x = 0", "x = 1")
+
+pdf(file="coefplot.pdf", width=8, height=4)
+dotchart(Eff, xlim=c(0, 1), pch=19, col=c("red", "blue"))
+lines(c(low1[1], high1[1]), y=c(5,5), col="red")
+lines(c(low1[2], high1[2]), y=c(6,6), col="blue")
+lines(c(low2[1], high2[1]), y=c(1,1), col="red")
+lines(c(low2[2], high2[2]), y=c(2,2), col="blue")
+dev.off()
+
+
+## Fit 7
+fit7 <- btergm(final_JSFnets ~ nodecov("contracts") + 
+                    nodecov("contrib") +
+                    b2star(2:3) + 
+                    edges, R = 1000)
+
+screenreg(fit7)
+
 
 
 # oh shit these tergm's work so let's save them
 save(fit0, fit1, fit2, fit3, fit4, fit5, file ="tergmfits.RData")
 
 #load("tergmfits.RData")
+
+
+# look at nodecovs' distribution
+
+df_list <- list(final_JSF_109, final_JSF_110, 
+                final_JSF_111, final_JSF_112)
+
+x <- do.call(rbind, lapply(df_list, function(df) ddply(df, 
+            .(cd), summarise, 
+            contrib = (mean(contrib)),
+            contracts = (mean(contracts)) ,
+            Committee = mean(Committee))))
+

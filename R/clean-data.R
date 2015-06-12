@@ -134,11 +134,13 @@ FullNet <- network(A, directed=FALSE, bipartite=TRUE, ignore.eval=FALSE,
                    names.eval="contracts")
 
 # Add vertices for both modes to account for complete universe of cases
-FullNet <- add.vertices(FullNet, nv = 16, last.mode = FALSE)
+FullNet <- add.vertices(FullNet, nv = 16, last.mode = TRUE)
 
-FullNet<- add.vertices(FullNet, nv = 335, last.mode = TRUE)
+FullNet<- add.vertices(FullNet, nv = 335, last.mode = FALSE)
 
-FullNet %v% "type" <- c(rep("cd", nrow(A)), rep("office", ncol(A)))
+FullNet %v% "type" <- c(rep("cd", FullNet$gal$bipartite), rep("office", FullNet$gal$n - FullNet$gal$bipartite))
+
+FullNet
 
 ## Plot FullNet
 plot(FullNet,
@@ -146,10 +148,10 @@ plot(FullNet,
      #pad=0,
      edge.col="gray",
      vertex.border=FALSE,
-     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
-     vertex.col=ifelse(FullNet %v% "type" == "cd", "black", "red"),
+     vertex.cex=ifelse(FullNet %v% "type" != "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" == "cd", "red", "black"),
      main = "Bipartite Network of JSF Contracts: FY 2005 - FY 2012")
-     legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
+     #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
      pch = 19)
 
      
@@ -251,6 +253,8 @@ save(JSF_naics, file="JSF_naics.RData")
 JSF$lndollars <- sign(JSF$dollarsobligated) * log(pmax(1, abs(JSF$dollarsobligated)))
 
 library(ggplot2)
+
+
 qplot(JSF$lndollars, 
       geom="histogram",
       main = "Distribution of F-35 Contract Values: FY 2005 - FY 2012", 
@@ -259,7 +263,9 @@ qplot(JSF$lndollars,
       ylab = "Frequency",
       fill=I("darkred"), 
       col=I("black")
-      )
+      ) + theme_bw()
+     
+     
    
       
 
