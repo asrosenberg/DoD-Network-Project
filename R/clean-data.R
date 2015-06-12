@@ -145,11 +145,12 @@ FullNet
 ## Plot FullNet
 plot(FullNet,
      displaylabels=FALSE,
+     displayisolates = FALSE,
      #pad=0,
      edge.col="gray",
      vertex.border=FALSE,
-     vertex.cex=ifelse(FullNet %v% "type" != "cd", 1, 1.75),
-     vertex.col=ifelse(FullNet %v% "type" == "cd", "red", "black"),
+     vertex.cex=ifelse(FullNet %v% "type" == "cd", 1, 1.75),
+     vertex.col=ifelse(FullNet %v% "type" != "cd", "red", "black"),
      main = "Bipartite Network of JSF Contracts: FY 2005 - FY 2012")
      #legend("topright", legend = c("Agencies", "CDs"), col = c("red", "black"), 
      pch = 19)

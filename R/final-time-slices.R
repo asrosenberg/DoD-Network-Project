@@ -120,11 +120,11 @@ for (i in 1:length(final_JSFnets)) {
 
 
    #  final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "ln_contracts", 
-                                        ln_contracts)  # add as vertex attribute
+                                      #  ln_contracts)  # add as vertex attribute
     # final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "ln_contrib", 
-                                        ln_contrib) # add as vertex attribute
+                                       # ln_contrib) # add as vertex attribute
      #final_JSFnets[[i]] <- set.vertex.attribute(final_JSFnets[[i]], "Committee", 
-                                        Committee) # add as vertex attribute
+                                   #     Committee) # add as vertex attribute
 
 # -----------------------------------------------------------------------------
 # Save
