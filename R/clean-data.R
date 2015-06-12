@@ -142,18 +142,16 @@ FullNet
 # plot FullNet
 plot(FullNet,
      displayisolates = FALSE,
-     displaylabels = TRUE,
-     label.cex = 0.25,
+     #displaylabels = TRUE,
+     label.cex = 0.3,
      edge.col = "gray",
      edge.lwd = 1,
-     vertex.cex = ifelse(FullNet %v% "type" == "cd", .70, 1.15),
+     vertex.rot = -50,
+     vertex.cex = ifelse(FullNet %v% "type" == "cd", 0.50, 1.0),
      vertex.col = ifelse(FullNet %v% "type" != "cd", "darkred", "black"))
 
 
-# vertex.col="hiv",
-# vertex.sides="sex",
-# vertex.cex=5,
-# vertex.rot=-30,
+
 
 # pdf("~/Dropbox/Academic_Conferences/POLNET_2015/Poster/spaghettiplot-20150612.pdf", 
 #     width = 20,  height = 20, pointsize = 24, family = "Palatino") 
