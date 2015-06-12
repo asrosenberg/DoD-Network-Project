@@ -5,10 +5,7 @@
 # load libraries
 library(ggplot2)
 library(network)
-library(xergm)
 library(texreg)
-library(network)
-library(plyr)
 
 # load data
 load("data/JSF-networks.Rdata")
@@ -24,10 +21,8 @@ plot(FullNet,
      displaylabels = TRUE,
      displayisolates = FALSE,
      edge.col = "gray",
-     vertex.border = FALSE,
-     vertex.cex = ifelse(FullNet %v% "type" == "cd", 1, 1.75),
-     vertex.col = ifelse(FullNet %v% "type" != "cd", "red", "black"))
-
+     vertex.cex = ifelse(FullNet %v% "type" == "cd", 1, 1.5),
+     vertex.col = ifelse(FullNet %v% "type" != "cd", "darkred", "black"))
 
 ##-----------------------------------------------------------------------------
 ## Histogram of Defense Contract Values Across CDs
@@ -45,4 +40,15 @@ qplot(JSF$lndollars,
       col=I("black")
 ) + theme_bw()
 
+##-----------------------------------------------------------------------------
+## Histogram of Bootstrap Simulation Densities
+
+pdf("~/Dropbox/Academic_Conferences/POLNET_2015/poster/hists-20150612.pdf", 
+    width = 10,  height = 5, pointsize = 24, family = "Palatino")
+ggplot(boot_df, aes(x = boots)) + 
+     geom_density(fill = "#bb0000") + 
+     facet_wrap(~ variable, scales = "free") + theme_bw() +
+     xlab("") + ylab("") + ggtitle("Coefficient Bootstrap Distributions") +
+     theme(strip.background = element_rect(fill = "white", color = "white"))
+dev.off()
 

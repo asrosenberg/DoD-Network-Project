@@ -139,6 +139,27 @@ FullNet %v% "type" <- c(rep("cd", FullNet$gal$bipartite), rep("office", FullNet$
 
 FullNet
 
+# plot FullNet
+plot(FullNet,
+     displayisolates = FALSE,
+     displaylabels = TRUE,
+     label.cex = 0.25,
+     edge.col = "gray",
+     edge.lwd = 1,
+     vertex.cex = ifelse(FullNet %v% "type" == "cd", .70, 1.15),
+     vertex.col = ifelse(FullNet %v% "type" != "cd", "darkred", "black"))
+
+
+# vertex.col="hiv",
+# vertex.sides="sex",
+# vertex.cex=5,
+# vertex.rot=-30,
+
+# pdf("~/Dropbox/Academic_Conferences/POLNET_2015/Poster/spaghettiplot-20150612.pdf", 
+#     width = 20,  height = 20, pointsize = 24, family = "Palatino") 
+# dev.off()
+
+
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th
 ## congresses because many contracts had dates earlier than the 109th and there
 ## was one in the 113th.

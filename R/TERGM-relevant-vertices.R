@@ -268,14 +268,15 @@ library("coefplot")
 
 coefplot(fit5)
 
-## Fit 6
+## Fit 6 -- the one we used for the coefficient plot and hist on our PolNet poster
 fit6 <- btergm(final_JSFnets ~ nodecov("contracts") + 
                     nodefactor("Committee") + 
                     nodecov("contrib") +
                     b2star(2:3) + 
                     edges, R = 10000)
 screenreg(fit6)
-## coefficient plot for fit 5
+
+## coefficient plot for fit 6
 plotreg(fit6, 
         lwd.inner = 1,
         custom.model.names = "TERGM Coefficient Plot", 
@@ -297,6 +298,7 @@ vars <- c("Prev. District Defense Contracts\nin $Billions",
           "2-stars\nDistrict-level", 
           "3-stars\nDistrict-level", 
           "Edges")
+
 results_df <- data.frame(
      Estimate = coef(fit6),
      Q025 = apply(fit6@bootsamp, 2, quantile, .025),
@@ -324,13 +326,18 @@ boot_df <- data.frame(
      variable = factor(rep(vars, each = 10000), levels = (vars))
 )
 
-pdf("~/Dropbox/Academic_Conferences/POLNET_2015/poster/hists-20150612.pdf", 
-    width = 10,  height = 5, pointsize = 24, family = "Palatino")
+pdf("~/Dropbox/Academic_Conferences/POLNET_2015/Poster/hists-20150612.pdf", 
+    width = 8,  height = 16, pointsize = 24, family = "Palatino")
+
 ggplot(boot_df, aes(x = boots)) + 
      geom_density(fill = "#bb0000") + 
-     facet_wrap(~ variable, scales = "free") + theme_bw() +
-     xlab("") + ylab("") + ggtitle("Coefficient Bootstrap Distributions") +
+     facet_wrap(~ variable, scales = "free", ncol = 2, nrow = 3) + 
+     theme_bw() +
+     xlab("") + 
+     ylab("") + 
+     ggtitle("Coefficient Bootstrap Distributions") +
      theme(strip.background = element_rect(fill = "white", color = "white"))
+
 dev.off()
 
 
