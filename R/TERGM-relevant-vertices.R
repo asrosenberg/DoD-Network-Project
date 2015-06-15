@@ -13,7 +13,8 @@ load("data/JSF-networks.Rdata")
 load("data/relevant_cd.RData")
 load("data/relevant_agencies.RData")
 load("data/final-time-slices.RData")
-load(file = "data/final_JSF_data.RData")
+load("data/final_JSF_data.RData")
+load("data/tergmfits.RData")
 
 # We need to see if the network package can auto add nodes to our bipartite net
 # add.vertices(final_JSFnets[[1]], nv = 16, last.mode = TRUE)
