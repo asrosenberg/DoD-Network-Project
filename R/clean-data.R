@@ -139,23 +139,45 @@ FullNet %v% "type" <- c(rep("cd", FullNet$gal$bipartite), rep("office", FullNet$
 
 FullNet
 
-# plot FullNet
+# plot FullNet (set seed!)
+
+gs <- function() sample.int(.Machine$integer.max, 1)
+
+
+
+
+
+png("~/Dropbox/Academic_Conferences/POLNET_2015/Poster/spaghettiplot-withoutlabels-20150615.png", 
+    width = 20,  height = 20, family = "Palatino", unit = "in", res = 180) 
+
+set.seed(1559757702)
 plot(FullNet,
      displayisolates = FALSE,
      #displaylabels = TRUE,
      label.cex = 0.3,
-     edge.col = "gray",
+     edge.col = "#666666",
      edge.lwd = 1,
      vertex.rot = -50,
      vertex.cex = ifelse(FullNet %v% "type" == "cd", 0.50, 1.0),
-     vertex.col = ifelse(FullNet %v% "type" != "cd", "darkred", "black"))
+     vertex.col = ifelse(FullNet %v% "type" != "cd", "#bb0000", "#000000"))
 
+dev.off()
 
+pdf("~/Dropbox/Academic_Conferences/POLNET_2015/Poster/spaghettiplot-withlabels-20150615.pdf", 
+    width = 20,  height = 20, pointsize = 24, family = "Palatino") 
 
+set.seed(1559757702)
+plot(FullNet,
+     displayisolates = FALSE,
+     displaylabels = TRUE,
+     label.cex = 0.3,
+     edge.col = "#666666",
+     edge.lwd = 1,
+     vertex.rot = -50,
+     vertex.cex = ifelse(FullNet %v% "type" == "cd", 0.50, 1.0),
+     vertex.col = ifelse(FullNet %v% "type" != "cd", "#bb0000", "#000000"))
 
-# pdf("~/Dropbox/Academic_Conferences/POLNET_2015/Poster/spaghettiplot-20150612.pdf", 
-#     width = 20,  height = 20, pointsize = 24, family = "Palatino") 
-# dev.off()
+dev.off()
 
 
 ## Create temporal slices by Congress. JWM: Notice I added the 108th and 113th

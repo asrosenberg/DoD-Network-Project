@@ -277,67 +277,120 @@ fit6 <- btergm(final_JSFnets ~ nodecov("contracts") +
                     edges, R = 10000)
 screenreg(fit6)
 
-## coefficient plot for fit 6
-plotreg(fit6, 
+
+fit7 <- btergm(final_JSFnets ~ nodecov("contracts") + 
+                    nodefactor("Committee") + 
+                    b1star(2) + 
+                    b2star(2) + 
+                    edges, R = 1000)
+screenreg(fit7)
+
+
+fit8 <- btergm(final_JSFnets ~ nodecov("contracts") + 
+                    nodefactor("Committee") + 
+                    b1star(2:3) + 
+                    b2star(2) + 
+                    edges, R = 1000)
+screenreg(fit8)
+
+
+fit9 <- btergm(final_JSFnets ~ nodecov("contracts") + 
+                    nodefactor("Committee") + 
+                    b1star(2) + 
+                    b2star(2:3) + 
+                    edges, R = 1000)
+screenreg(fit9)
+
+
+fit10 <- btergm(final_JSFnets ~ nodecov("contracts") + 
+                    nodefactor("Committee") + 
+                    b1star(2:3) + 
+                    b2star(2:3) + 
+                    edges, R = 1000)
+screenreg(fit10)
+
+
+fit11 <- btergm(final_JSFnets ~ nodecov("contracts") + 
+                    nodefactor("Committee") + 
+                    b1star(2) + 
+                    b2star(2:6) + 
+                    edges, R = 1000)
+screenreg(fit11)
+
+## coefficient plot for fit 9
+plotreg(fit9, 
         lwd.inner = 1,
         custom.model.names = "TERGM Coefficient Plot", 
         omit.coef = "Edges",
         custom.coef.names =
              c("Contract Value (Edge Cov.)", 
                "Committee (Node Factor)", 
-               "Campaign Contributions (Node Cov.)",
+               "2-stars (Mode 1)", 
                "2-stars (Mode 2)", 
                "3-stars (Mode 2)", 
                "Edges"
                )
 )
 
-coefplot(fit6)
-vars <- c("Prev. District Defense Contracts\nin $Billions", 
-          "Committee Member\n0-1", 
-          "Campaign Contributions\nin $10k",
-          "2-stars\nDistrict-level", 
-          "3-stars\nDistrict-level", 
-          "Edges")
+coefplot(fit9)
 
-results_df <- data.frame(
-     Estimate = coef(fit6),
-     Q025 = apply(fit6@bootsamp, 2, quantile, .025),
-     Q975 = apply(fit6@bootsamp, 2, quantile, .975),
-     Variable = factor(vars, level = rev(vars)),
-     color = factor(rep(1:2, each = 3))
+library(ggplot2)
+     
+     vars <- c("Prev. District Defense Contracts ($B)", 
+               "Committee Member", 
+               "District 2-stars", 
+               "Agency 2-stars", 
+               "Agency 3-stars", 
+               "Edges")
+     results_df <- data.frame(
+          Estimate = apply(fit9@bootsamp, 2, quantile, .5), #coef(fit9),
+          Q025 = pmax(-2, apply(fit9@bootsamp, 2, quantile, .025)),
+          Q975 = apply(fit9@bootsamp, 2, quantile, .975),
+          Variable = factor(vars, level = rev(vars)),
+          color = factor(c(1, 1, 2, 2, 2, 2))
      )
+     
+     pdf("~/Dropbox/Academic_Conferences/POLNET_2015/coefplot-fit9-20150615.pdf", 
+         width = 10,  height = 5, family = "Palatino")
+     ggplot(subset(results_df, Variable != "Edges"),
+            aes(x = Estimate, xmin = Q025, xmax = Q975, y = Variable, color = color, fill = color)) +
+          geom_vline(xintercept = 0, linetype = 3, color = "gray") +
+          geom_errorbarh(height = 0, size = 1, lineend = "round") +
+          geom_point(size = 4) +
+          theme_bw() +
+          ylab("") + xlab("") + xlim(-2, 2)+ expand_limits(x = 0) +
+          ggtitle("TERGM Coefficients") +
+          scale_color_manual(name = "color", values = c("#bb0000", "#666666")) +
+          theme(legend.position = "none", text = element_text(size=20))
+     dev.off()
 
-pdf("~/Dropbox/Academic_Conferences/POLNET_2015/coefplot-20150612.pdf", 
-    width = 10,  height = 5, pointsize = 24, family = "Palatino")
-ggplot(subset(results_df, Variable != "Edges"),
-       aes(x = Estimate, xmin = Q025, xmax = Q975, y = Variable, color = color, fill = color)) +
-     geom_vline(xintercept = 0, linetype = 3, color = "gray") +
-     geom_errorbarh(height = 0, size = 1, lineend = "round") +
-     geom_point(size = 4) +
-     theme_bw() +
-     ylab("") + xlab("") +
-     ggtitle("TERGM coefficients") +
-     scale_color_manual(name = "color", values = c("#bb0000", "#666666")) +
-     theme(legend.position = "none")
-dev.off()
+library(reshape2)
+View(melt(fit9@bootsamp))
 
 boot_df <- data.frame(
-     boots <- as.vector(fit6@bootsamp),
-     variable = factor(rep(vars, each = 10000), levels = (vars))
+     boots = as.vector(fit9@bootsamp),
+     variable = factor(rep(vars, each = 1000), levels = (vars))
 )
+ok <- (boot_df$variable == vars[1] & boot_df$boots < 1.1) |
+      (boot_df$variable == vars[3] & boot_df$boots > -3) |
+      (boot_df$variable == vars[4] & boot_df$boots < .8) |
+      (boot_df$variable == vars[5] & boot_df$boots > -.06) |
+     boot_df$variable %in% vars[c(2, 6)]
+boot_df <- boot_df[ok, ]
 
-pdf("~/Dropbox/Academic_Conferences/POLNET_2015/Poster/hists-20150612.pdf", 
-    width = 8,  height = 16, pointsize = 24, family = "Palatino")
+
+pdf("~/Dropbox/Academic_Conferences/POLNET_2015/Poster/hists-20150615.pdf", 
+    width = 8,  height = 10, family = "Palatino")
 
 ggplot(boot_df, aes(x = boots)) + 
-     geom_density(fill = "#bb0000") + 
+     geom_density(fill = "#bb0000", adjust = .7) + 
      facet_wrap(~ variable, scales = "free", ncol = 2, nrow = 3) + 
      theme_bw() +
      xlab("") + 
      ylab("") + 
      ggtitle("Coefficient Bootstrap Distributions") +
-     theme(strip.background = element_rect(fill = "white", color = "white"))
+     theme(strip.background = element_rect(fill = "white", color = "white"), 
+           text = element_text(size=20))
 
 dev.off()
 
@@ -401,3 +454,19 @@ x <- do.call(rbind, lapply(df_list, function(df) ddply(df,
             contracts = (mean(contracts)) ,
             Committee = mean(Committee))))
 
+
+# below is crap
+
+fit9a <- btergm(final_JSFnets_1 ~ nodecov("contracts") + 
+                    nodefactor("Committee") + 
+                    b1star(2) + 
+                    b2star(2:3) + 
+                    edges, R = 1000)
+
+screenreg(fit9)
+gof9 <- gof(fit9a)
+plot(gof5, roc = TRUE, pr = TRUE)
+
+
+fit00 <- btergm(final_JSFnets ~ edges + b2star(2), R = 100)
+gof(fit00)
