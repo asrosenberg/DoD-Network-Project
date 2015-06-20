@@ -284,6 +284,8 @@ fit7 <- btergm(final_JSFnets ~ nodecov("contracts") +
                     b2star(2) + 
                     edges, R = 1000)
 screenreg(fit7)
+plotreg(fit7)
+gof_test <- gof(fit7)
 
 
 fit8 <- btergm(final_JSFnets ~ nodecov("contracts") + 
